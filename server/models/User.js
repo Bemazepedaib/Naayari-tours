@@ -34,7 +34,7 @@ const UserSchema = new Schema({
         required: true,
         enum: ['admin','guide','client']
     },
-    coupons : [{
+    coupons: [{
         couponType: {
             type: String,    
             required: false,
@@ -45,7 +45,7 @@ const UserSchema = new Schema({
             required: false,
         },
         couponAmount: {
-            type: String,    
+            type: Number,    
             required: false,
         },
     }],
@@ -63,22 +63,25 @@ const UserSchema = new Schema({
         type: Boolean,    
         required: true,
     },
+    verified: {
+        type: Boolean,
+        required: true
+    },
     guideDescription: {
         type: String,
-        require: false
+        required: false
     },
     guidePhoto: {
         type: String,
-        require: false
+        required: false
     },
     guideSpecial: {
         type: String,
-        require: false
+        required: false
     },
     guideState: {
-        type: String,
-        require: false,
-        enum: ['active', 'inactive']
+        type: Boolean,
+        required: false,
     }
 });
 

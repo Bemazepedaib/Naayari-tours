@@ -1,4 +1,4 @@
-require('dotenv').config()
+require('dotenv').config({ path: '../.env' })
 
 //libraries
 const express = require('express');
@@ -8,15 +8,30 @@ const app = express();
 
 //schemas
 const users = require('./schemas/users');
+const events = require('./schemas/events');
+const preferences = require('./schemas/preferences');
+const trips = require('./schemas/trips');
 
 //listen
 app.get('/', (req, res) => {
     res.json({msg : 'API is Working'})
 })
 
-//graphql endpoint
-app.use('/graphql', graphqlHTTP({
+//graphql endpoints
+app.use('/graphql/users', graphqlHTTP({
     schema: users,
+    graphiql: process.env.NODE_ENV === 'development'
+}))
+app.use('/graphql/trips', graphqlHTTP({
+    schema: trips,
+    graphiql: process.env.NODE_ENV === 'development'
+}))
+app.use('/graphql/events', graphqlHTTP({
+    schema: events,
+    graphiql: process.env.NODE_ENV === 'development'
+}))
+app.use('/graphql', graphqlHTTP({
+    schema: preferences,
     graphiql: process.env.NODE_ENV === 'development'
 }))
 
