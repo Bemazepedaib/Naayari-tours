@@ -21,6 +21,10 @@ const UserSchema = new Schema({
         required: true,
         unique: true
     },
+    password: {
+        type: String,
+        required: true
+    },
     sex: {
         type: String,    
         required: true,
@@ -48,6 +52,14 @@ const UserSchema = new Schema({
             type: Number,    
             required: false,
         },
+        couponDate: {
+            type: String,
+            required: false
+        },
+        couponApplied: {
+            type: Boolean,
+            required: false
+        }
     }],
     preferences: [{
         preferenceType: {

@@ -62,6 +62,7 @@ const UserType = new GraphQLObjectType({
         cellphone: { type: GraphQLString },
         birthDate: { type: GraphQLString },
         email: { type: GraphQLString },
+        password: { type: GraphQLString },
         sex: { type: GraphQLString },
         reference: { type: GraphQLString },
         userType: { type: GraphQLString },
@@ -109,6 +110,7 @@ const mutation = new GraphQLObjectType({
                 cellphone: { type: GraphQLNonNull(GraphQLString) },
                 birthDate: { type: GraphQLNonNull(GraphQLString) },
                 email: { type: GraphQLNonNull(GraphQLString) },
+                password: { type: GraphQLNonNull(GraphQLString) },
                 sex: { type: GraphQLNonNull(GraphQLString) },
                 reference: { type: GraphQLString },
                 userType: { type: GraphQLNonNull(GraphQLString) },
@@ -128,6 +130,7 @@ const mutation = new GraphQLObjectType({
                     cellphone: args.cellphone,
                     birthDate: args.birthDate,
                     email: args.email,
+                    password: args.password,
                     sex: args.sex,
                     reference: args.reference,
                     userType: args.userType,
@@ -162,6 +165,7 @@ const mutation = new GraphQLObjectType({
                 cellphone: { type: GraphQLNonNull(GraphQLString) },
                 birthDate: { type: GraphQLNonNull(GraphQLString) },
                 email: { type: GraphQLNonNull(GraphQLString) },
+                password: { type: GraphQLNonNull(GraphQLString) },
                 sex: { type: GraphQLNonNull(GraphQLString) },
                 reference: { type: GraphQLString },
                 userType: { type: GraphQLNonNull(GraphQLString) },
@@ -177,7 +181,7 @@ const mutation = new GraphQLObjectType({
             },
             resolve(parent, args) {
                 return User.findOneAndUpdate(
-                    args.email,
+                    { email: args.email, password: args.password },
                     {
                         $set: {
                             name: args.name,
