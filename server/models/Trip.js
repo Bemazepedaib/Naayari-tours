@@ -27,7 +27,7 @@ const TripSchema = new Schema({
                 required: true
             }
         }],
-        discount: [{
+        discount: {
             dateStart: {
                 type: String,
                 required: false
@@ -44,7 +44,7 @@ const TripSchema = new Schema({
                 type: Boolean,
                 required: false
             }
-        }],
+        },
         itinerary: {
             type: String,
             required: true
