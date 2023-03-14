@@ -70,10 +70,10 @@ const TripSchema = new Schema({
         type: String,
         required: true
     },
-    tripType: {
+    tripType: [{
         type: String,
         required: true
-    },
+    }],
     tripRating: {
         type: Number,
         required: true

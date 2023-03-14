@@ -204,7 +204,7 @@ const TripType = new GraphQLObjectType({
         tripName: { type: GraphQLString },
         tripInformation: { type: TripInformationType },
         tripKit: { type: GraphQLString },
-        tripType: { type: GraphQLString },
+        tripType: { type: GraphQLList(GraphQLString) },
         tripRating: { type: GraphQLInt },
         tripStatus: { type: GraphQLBoolean },
         tripReview: { type: GraphQLList(TripReviewType) }
