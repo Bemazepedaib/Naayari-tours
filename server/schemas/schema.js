@@ -154,13 +154,33 @@ const InputTripPriceType = new GraphQLInputObjectType({
     })
 });
 
+//Activity type
+const TripActivityType = new GraphQLObjectType({
+    name: 'TripActivity',
+    fields: () => ({
+        activityName: { type: GraphQLString },
+        activityPhoto: { type: GraphQLString }
+    })
+});
+
+const InputTripActivityType = new GraphQLInputObjectType({
+    name: 'InputTripActivity',
+    fields: () => ({
+        activityName: { type: GraphQLString },
+        activityPhoto: { type: GraphQLString }
+    })
+});
+
 //Information type
 const TripInformationType = new GraphQLObjectType({
     name: 'TripInformation',
     fields: () => ({
         description: { type: GraphQLString },
+        date: { type: GraphQLList(GraphQLString) },
         place: { type: GraphQLString },
         price: { type: GraphQLList(TripPriceType) },
+        duration: { type: GraphQLString },
+        activities: { type: GraphQLList(TripActivityType) },
         discount: { type: TripDiscountType },
         itinerary: { type: GraphQLString },
         securityAdvice: { type: GraphQLString },
@@ -174,8 +194,11 @@ const InputTripInformationType = new GraphQLInputObjectType({
     name: 'InputTripInformation',
     fields: () => ({
         description: { type: GraphQLString },
+        date: { type: GraphQLList(GraphQLString) },
         place: { type: GraphQLString },
         price: { type: GraphQLList(InputTripPriceType) },
+        duration: { type: GraphQLString },
+        activities: { type: GraphQLList(InputTripActivityType) },
         discount: { type: InputTripDiscountType },
         itinerary: { type: GraphQLString },
         securityAdvice: { type: GraphQLString },

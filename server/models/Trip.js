@@ -13,10 +13,28 @@ const TripSchema = new Schema({
             type: String,
             required: false
         },
+        date: [{
+            type: String,
+            required: false
+        }],
         place: {
             type: String,
             required: false
         },
+        duration: {
+            type: String,
+            required: false
+        },
+        activities: [{
+            activityName: {
+                type: String,
+                required: false
+            },
+            activityPhoto: {
+                type: String,
+                required: false
+            }
+        }],
         price: [{
             priceType: {
                 type: String,
