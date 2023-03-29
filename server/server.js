@@ -1,9 +1,13 @@
-require('dotenv').config({ path: '../.env'})
+require('dotenv').config({
+    path: '../.env'
+})
 
 //libraries
 const express = require('express');
 const mongoose = require('mongoose');
-const { graphqlHTTP } = require('express-graphql');
+const {
+    graphqlHTTP
+} = require('express-graphql');
 const app = express();
 const cors = require('cors')
 
@@ -16,14 +20,16 @@ const trips = require('./schemas/trips');*/
 
 //listen
 app.get('/', (req, res) => {
-    res.json({msg : 'API is Working'})
+    res.json({
+        msg: 'API is Working'
+    })
 })
 
 //cors
 app.use(cors());
 
 //graphql endpoints
-app.use('/graphql', graphqlHTTP({
+app.use('/NaayarAPI', graphqlHTTP({
     schema: schema,
     graphiql: process.env.NODE_ENV === 'development'
 }))
