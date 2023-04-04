@@ -4,6 +4,8 @@ const User = require('../models/User');
 const { GraphQLString, GraphQLList, GraphQLNonNull, GraphQLBoolean } = require('graphql');
 // User defined types
 const { UserType, InputUserCouponType, InputUserPreferenceType } = require('../types/typeDefs');
+// Utils
+const { generateJWToken } = require('../util/auth')
 
 const login = {
     
