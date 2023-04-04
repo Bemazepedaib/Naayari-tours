@@ -20,14 +20,6 @@ const trip = {
     }
 }
 
-const tripID = {
-    type: TripType,
-    args: { id: { type: GraphQLID } },
-    resolve(parent, args) {
-        return Trip.findById({ id: args.id })
-    }
-}
-
 module.exports = {
-    trips, trip, tripID
+    trips, trip
 }

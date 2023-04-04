@@ -8,7 +8,20 @@ const { UserType, InputUserCouponType, InputUserPreferenceType } = require('../t
 const { generateJWToken } = require('../util/auth')
 
 const login = {
-    
+    type: GraphQLString,
+    args: {
+        email: { type: GraphQLNonNull(GraphQLString) },
+        password: { type: GraphQLNonNull(GraphQLString) }
+    },
+    async resolve(parent, args) {
+        const user = await User.findOne({ email: args.email })
+        if (!user || args.password !== user.password) throw new Error("Credenciales inválidas");
+        const token = generateJWToken({
+            _id: user._id,
+            email: user.email
+        });
+        return token;
+    }
 }
 
 const addUser = {
@@ -81,7 +94,7 @@ const updateUser = {
         membership: { type: GraphQLNonNull(GraphQLBoolean) },
         verified: { type: GraphQLNonNull(GraphQLBoolean) },
         coupons: { type: GraphQLList(InputUserCouponType) },
-        preferences: { type: GraphQLList(InputUserPreferenceType) },                
+        preferences: { type: GraphQLList(InputUserPreferenceType) },
         guideDescription: { type: GraphQLString },
         guidePhoto: { type: GraphQLString },
         guideSpecial: { type: GraphQLString },
