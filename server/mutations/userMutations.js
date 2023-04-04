@@ -6,6 +6,7 @@ const { GraphQLString, GraphQLList, GraphQLNonNull, GraphQLBoolean } = require('
 const { UserType, InputUserCouponType, InputUserPreferenceType } = require('../types/typeDefs');
 // Utils
 const { generateJWToken } = require('../util/auth')
+const { encryptPassword, comparePassword } = require('../util/bcrypt')
 
 const login = {
     type: GraphQLString,
@@ -13,7 +14,7 @@ const login = {
         email: { type: GraphQLNonNull(GraphQLString) },
         password: { type: GraphQLNonNull(GraphQLString) }
     },
-    async resolve(parent, args) {
+    async resolve(_, args) {
         const user = await User.findOne({ email: args.email })
         if (!user || args.password !== user.password) throw new Error("Credenciales inválidas");
         const token = generateJWToken({
@@ -45,27 +46,19 @@ const addUser = {
         guideSpecial: { type: GraphQLString },
         guideState: { type: GraphQLBoolean },
     },
-    resolve(parent, args) {
+    async resolve(_, { name, cellphone, birthDate, email, password, sex, reference, userType, userLevel, membership,
+            verified, coupons, preferences, guideDescription, guidePhoto, guideSpecial, guideState }) {
         const user = new User({
-            name: args.name,
-            cellphone: args.cellphone,
-            birthDate: args.birthDate,
-            email: args.email,
-            password: args.password,
-            sex: args.sex,
-            reference: args.reference,
-            userType: args.userType,
-            coupons: args.coupons,
-            preferences: args.preferences,
-            userLevel: args.userLevel,
-            membership: args.membership,
-            verified: args.verified,
-            guideDescription: args.guideDescription,
-            guidePhoto: args.guidePhoto,
-            guideSpecial: args.guideSpecial,
-            guideState: args.guideState
+            name, cellphone, birthDate, email,
+            password, sex, reference, userType,
+            userLevel, membership, verified, coupons, 
+            preferences, guideDescription, guidePhoto,
+            guideSpecial, guideState
         });
-        return user.save()
+        const exists = User.findOne({ email: args.email })
+        if (exists) throw new Error("El correo ya está en uso");
+        user.password = await bcrypt.encryptPassword(user.password)
+        return await user.save()
     }
 }
 
