@@ -1,7 +1,7 @@
 // Mongoose Model
 const Trip = require('../models/Trip');
 // GraphQL types
-const { GraphQLString, GraphQLList } = require('graphql');
+const { GraphQLString, GraphQLList, GraphQLID } = require('graphql');
 // User defined types
 const { TripType } = require('../types/typeDefs');
 
@@ -20,6 +20,14 @@ const trip = {
     }
 }
 
+const tripID = {
+    type: TripType,
+    args: { id: { type: GraphQLID } },
+    resolve(parent, args) {
+        return Trip.findById({ id: args.id })
+    }
+}
+
 module.exports = {
-    trips, trip
+    trips, trip, tripID
 }

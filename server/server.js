@@ -1,6 +1,4 @@
-require('dotenv').config({
-    path: '../.env'
-})
+require('dotenv').config({ path: '../.env' })
 
 //libraries
 const express = require('express');

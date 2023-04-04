@@ -5,7 +5,7 @@ const { addEvent, deleteEvent, updateEvent } = require('../mutations/eventMutati
 const { addPreference, deletePreference, updatePreference} = require('../mutations/preferenceMutations');
 //Querys imports
 const { users, user } = require('../querys/userQuerys');
-const { trips, trip } = require('../querys/tripQuerys');
+const { trips, trip, tripID } = require('../querys/tripQuerys');
 const { events, event } = require('../querys/eventQuerys');
 const { preferences, preference} = require('../querys/preferenceQuerys');
 
@@ -20,6 +20,7 @@ const QueryType = new GraphQLObjectType({
         user,
         trips,
         trip,
+        tripID,
         events,
         event,
         preferences,
