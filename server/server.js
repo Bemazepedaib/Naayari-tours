@@ -5,16 +5,19 @@ const express = require('express');
 const mongoose = require('mongoose');
 const { graphqlHTTP } = require('express-graphql');
 const app = express();
-const cors = require('cors')
+const cors = require('cors');
+const { auth } = require('./middlewares/login');
 
 //schemas
-const schema = require('./schemas/schema')
+const schema = require('./schemas/schema');
 
 //cors
 app.use(cors({
     origin: 'http://localhost:3000',
     credentials: true
 }));
+
+//app.use(auth);
 
 //graphql endpoint
 app.use('/NaayarAPI', graphqlHTTP({
