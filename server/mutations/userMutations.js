@@ -23,10 +23,8 @@ const login = {
             _id: user._id,
             email: user.email,
             userType: user.userType,
-            userLevel: user.userLevel,
-            preferences: user.preferences
         });
-        return token;
+        return user.userType+"-"+user.preferences+"-"+token;
     }
 }
 
@@ -66,10 +64,8 @@ const addUser = {
             _id: user._id,
             email: user.email,
             userType: user.userType,
-            userLevel: user.userLevel,
-            preferences: user.preferences
         });
-        return token;
+        return user.userType+"-"+user.preferences+"-"+token;
     }
 }
 
@@ -111,6 +107,7 @@ const updateUser = {
     async resolve(_, { name, cellphone, birthDate, email, password, sex, reference, userType, userLevel, membership,
         verified, coupons, preferences, guideDescription, guidePhoto, guideSpecial, guideState }, { verifiedUser }) {
         if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
+        if (verifiedUser.userType !== "admin" && verifiedUser.email !== email) throw new Error("No puedes cambiar los datos de otro usuario");
         const newPass = await encryptPassword(password);
         const updated = User.findOneAndUpdate(
             { email },

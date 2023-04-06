@@ -20,6 +20,15 @@ const user = {
     }
 }
 
+const me = {
+    type: UserType,
+    args: {},
+    resolve(_, args, { verifiedUser }){
+        const mail = verifiedUser.email
+        return User.findOne({ mail })
+    }
+}
+
 module.exports = {
-    users, user
+    users, user, me
 }
