@@ -12,12 +12,9 @@ const { auth } = require('./middlewares/login');
 const schema = require('./schemas/schema');
 
 //cors
-app.use(cors({
-    origin: 'http://localhost:3000',
-    credentials: true
-}));
+app.use(cors());
 
-//app.use(auth);
+app.use(auth);
 
 //graphql endpoint
 app.use('/NaayarAPI', graphqlHTTP({

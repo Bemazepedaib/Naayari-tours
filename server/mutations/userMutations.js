@@ -14,19 +14,24 @@ const login = {
         email: { type: GraphQLNonNull(GraphQLString) },
         password: { type: GraphQLNonNull(GraphQLString) }
     },
-    async resolve(_, args) {
-        const user = await User.findOne({ email: args.email })
-        if (!user || args.password !== user.password) throw new Error("Credenciales inválidas");
+    async resolve(_, { email, password }) {
+        const user = await User.findOne({ email })
+        if (!user) throw new Error("Correo inválido");
+        const validPass = await comparePassword(password, user.password);
+        if (!validPass) throw new Error("Contraseña inválida");
         const token = generateJWToken({
             _id: user._id,
-            email: user.email
+            email: user.email,
+            userType: user.userType,
+            userLevel: user.userLevel,
+            preferences: user.preferences
         });
         return token;
     }
 }
 
 const addUser = {
-    type: UserType,
+    type: GraphQLString,
     args: {
         name: { type: GraphQLNonNull(GraphQLString) },
         cellphone: { type: GraphQLNonNull(GraphQLString) },
@@ -49,31 +54,41 @@ const addUser = {
     async resolve(_, { name, cellphone, birthDate, email, password, sex, reference, userType, userLevel, membership,
             verified, coupons, preferences, guideDescription, guidePhoto, guideSpecial, guideState }) {
         const user = new User({
-            name, cellphone, birthDate, email,
-            password, sex, reference, userType,
-            userLevel, membership, verified, coupons, 
-            preferences, guideDescription, guidePhoto,
+            name, cellphone, birthDate, email, password, sex, reference, userType,
+            userLevel, membership, verified, coupons, preferences, guideDescription, guidePhoto,
             guideSpecial, guideState
         });
-        const exists = User.findOne({ email: args.email })
+        const exists = await User.findOne({ email })
         if (exists) throw new Error("El correo ya está en uso");
-        user.password = await bcrypt.encryptPassword(user.password)
-        return await user.save()
+        user.password = await encryptPassword(user.password)
+        await user.save()
+        const token = generateJWToken({
+            _id: user._id,
+            email: user.email,
+            userType: user.userType,
+            userLevel: user.userLevel,
+            preferences: user.preferences
+        });
+        return token;
     }
 }
 
 const deleteUser = {
-    type: UserType,
+    type: GraphQLString,
     args: {
         email: { type: GraphQLNonNull(GraphQLString) }
     },
-    resolve(parent, args) {
-        return User.findOneAndDelete({ email: args.email })
+    async resolve(_, { email }, { verifiedUser }) {
+        if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
+        if (verifiedUser.userType !== "admin") throw new Error("Solo un administrador puede eliminar usuarios");
+        const deleted = await User.findOneAndDelete({ email });
+        if (!deleted) throw new Error("No se pudo eliminar el usuario");
+        return "Borrado exitósamente";
     }
 }
 
 const updateUser = {
-    type: UserType,
+    type: GraphQLString,
     args: {
         name: { type: GraphQLNonNull(GraphQLString) },
         cellphone: { type: GraphQLNonNull(GraphQLString) },
@@ -93,30 +108,24 @@ const updateUser = {
         guideSpecial: { type: GraphQLString },
         guideState: { type: GraphQLBoolean },
     },
-    resolve(parent, args) {
-        return User.findOneAndUpdate(
-            { email: args.email, password: args.password },
+    async resolve(_, { name, cellphone, birthDate, email, password, sex, reference, userType, userLevel, membership,
+        verified, coupons, preferences, guideDescription, guidePhoto, guideSpecial, guideState }, { verifiedUser }) {
+        if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
+        const newPass = await encryptPassword(password);
+        const updated = User.findOneAndUpdate(
+            { email },
             {
                 $set: {
-                    name: args.name,
-                    cellphone: args.cellphone,
-                    birthDate: args.birthDate,
-                    sex: args.sex,
-                    reference: args.reference,
-                    userType: args.userType,
-                    coupons: args.coupons,
-                    preferences: args.preferences,
-                    userLevel: args.userLevel,
-                    membership: args.membership,
-                    verified: args.verified,
-                    guideDescription: args.guideDescription,
-                    guidePhoto: args.guidePhoto,
-                    guideSpecial: args.guideSpecial,
-                    guideState: args.guideState
+                    name, cellphone, birthDate, sex, email, newPass,
+                    reference, userType, coupons, preferences,
+                    userLevel, membership, verified, guideDescription,
+                    guidePhoto, guideSpecial, guideState
                 }
             },
             { new: true }
         );
+        if (!updated) throw new Error("No se pudo actualizar el usuario");
+        return "Actualizado exitósamente";
     }
 }
 
