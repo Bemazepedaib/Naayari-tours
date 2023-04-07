@@ -14,6 +14,7 @@ const schema = require('./schemas/schema');
 //cors
 app.use(cors());
 
+//middleware de auth
 app.use(auth);
 
 //graphql endpoint

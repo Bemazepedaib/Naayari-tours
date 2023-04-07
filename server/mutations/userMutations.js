@@ -16,15 +16,14 @@ const login = {
     },
     async resolve(_, { email, password }) {
         const user = await User.findOne({ email })
-        if (!user) throw new Error("Correo inválido");
+        if (!user) throw new Error("Datos inválidos");
         const validPass = await comparePassword(password, user.password);
-        if (!validPass) throw new Error("Contraseña inválida");
+        if (!validPass) throw new Error("Datos inválidos");
         const token = generateJWToken({
             _id: user._id,
-            email: user.email,
-            userType: user.userType,
+            email: user.email
         });
-        return user.userType+"-"+user.preferences+"-"+token;
+        return user.userType+"%"+user.preferences+"%"+token;
     }
 }
 
@@ -62,10 +61,9 @@ const addUser = {
         await user.save()
         const token = generateJWToken({
             _id: user._id,
-            email: user.email,
-            userType: user.userType,
+            email: user.email
         });
-        return user.userType+"-"+user.preferences+"-"+token;
+        return user.userType+"%"+user.preferences+"%"+token;
     }
 }
 
