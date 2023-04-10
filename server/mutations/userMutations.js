@@ -80,7 +80,7 @@ const deleteUser = {
         if (verifiedUser.userType !== "admin") throw new Error("Solo un administrador puede eliminar usuarios");
         const deleted = await User.findOneAndDelete({ email });
         if (!deleted) throw new Error("No se pudo eliminar el usuario");
-        return "Borrado exitósamente";
+        return "¡Usuario borrado exitósamente!";
     }
 }
 
@@ -123,7 +123,7 @@ const updateUser = {
             { new: true }
         );
         if (!updated) throw new Error("No se pudo actualizar el usuario");
-        return "Actualizado exitósamente";
+        return "¡Usuario actualizado exitósamente!";
     }
 }
 

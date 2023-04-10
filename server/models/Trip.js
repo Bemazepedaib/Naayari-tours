@@ -100,7 +100,7 @@ const TripSchema = new Schema({
         type: Boolean,
         required: true
     },
-    tripReviews: [{
+    tripReview: [{
         user: {
             type: String,
             required: false

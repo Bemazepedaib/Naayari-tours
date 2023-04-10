@@ -6,50 +6,63 @@ const { GraphQLString, GraphQLNonNull } = require('graphql');
 const { PreferenceType } = require('../types/typeDefs');
 
 const addPreference = {
-    type: PreferenceType,
+    type: GraphQLString,
     args: {
         preferenceType: { type: GraphQLNonNull(GraphQLString) },
         preferenceDescription: { type: GraphQLNonNull(GraphQLString) },
         preferenceIcon: { type: GraphQLNonNull(GraphQLString) }
     },
-    resolve(parent, args){
+    async resolve(_, { preferenceType, preferenceDescription, preferenceIcon }){
+        if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
+        if (verifiedUser.userType !== "admin") throw new Error("Solo un administrador puede añadir preferencias");
+        const exists = await Event.findOne({ preferenceType: preferenceType });
+        if (exists) throw new Error("La preferencia ya está creada");
         const preference = new Preference({
-            preferenceType: args.preferenceType,
-            preferenceDescription: args.preferenceDescription,
-            preferenceIcon: args.preferenceIcon
+            preferenceType: preferenceType,
+            preferenceDescription: preferenceDescription,
+            preferenceIcon: preferenceIcon
         });
-        return preference.save()
+        await preference.save()
+        return "¡Preferencia creada exitósamente!"
     }
 }
 
 const deletePreference = {
-    type: PreferenceType,
+    type: GraphQLString,
     args: {
         preferenceType: { type: GraphQLNonNull(GraphQLString) }
     },
-    resolve(parent, args) {
-        return Preference.findByIdAndDelete({ preferenceType: args.preferenceType })
+    async resolve(_, { preferenceType }) {
+        if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
+        if (verifiedUser.userType !== "admin") throw new Error("Solo un administrador puede eliminar preferencias");
+        const deleted = await Preference.findOneAndDelete({ preferenceType: preferenceType });
+        if (!deleted) throw new Error("No se pudo eliminar la preferencia");
+        return "¡Preferencia eliminada exitósamente!"
     }
 }
 
 const updatePreference = {
-    type: PreferenceType,
+    type: GraphQLString,
     args: {
         preferenceType: { type: GraphQLNonNull(GraphQLString) },
         preferenceDescription: { type: GraphQLNonNull(GraphQLString) },
         preferenceIcon: { type: GraphQLNonNull(GraphQLString) }
     },
-    resolve(parent, args) {
-        return Preference.findOneAndUpdate(
-            args.preferenceType,
+    async resolve(_, { preferenceType, preferenceDescription, preferenceIcon }) {
+        if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
+        if (verifiedUser.userType !== "admin") throw new Error("Solo un administrador puede actualizar preferencias");
+        const updated = await Preference.findOneAndUpdate(
+            preferenceType,
             {
                 $set: {
-                    preferenceDescription: args.preferenceDescription,
-                    preferenceIcon: args.preferenceIcon
+                    preferenceDescription: preferenceDescription,
+                    preferenceIcon: preferenceIcon
                 }
             },
             { new: true }
         );
+        if (!updated) throw new Error("No se pudo actualizar la preferencia");
+        return "¡Preferencia actualizado exitósamente!";
     }
 }
 

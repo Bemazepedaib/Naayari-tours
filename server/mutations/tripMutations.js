@@ -19,7 +19,7 @@ const addTrip = {
     async resolve(_, { tripName, tripInformation, tripKit, tripType, tripRating, tripStatus, tripReview }, { verifiedUser }) {
         if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
         if (verifiedUser.userType !== "admin") throw new Error("Solo un administrador puede eliminar viajes");
-        const exists = await Trip.findOne({ tripName });
+        const exists = await Trip.findOne({ tripName: tripName });
         if (exists) throw new Error("El viaje ya está creado");
         const trip = new Trip({
             tripName, tripInformation,
@@ -28,7 +28,7 @@ const addTrip = {
             tripReview
         });
         await trip.save();
-        return "Viaje creado exitósamente";
+        return "¡Viaje creado exitósamente!";
     }
 }
 
@@ -40,9 +40,9 @@ const deleteTrip = {
     async resolve(_, { tripName }, { verifiedUser } ){
         if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
         if (verifiedUser.userType !== "admin") throw new Error("Solo un administrador puede eliminar usuarios");
-        const deleted = await Trip.findOneAndDelete({ tripName });
+        const deleted = await Trip.findOneAndDelete({ tripName: tripName });
         if (!deleted) throw new Error("No se pudo eliminar el viaje");
-        return "Borrado exitósamente";
+        return "¡Viaje Borrado exitósamente!";
     }
 }
 
@@ -72,7 +72,7 @@ const updateTrip = {
             { new: true }
         );
         if (!updated) throw new Error("No se pudo actualizar el viaje");
-        return "Actualizado exitósamente";
+        return "¡Viaje Actualizado exitósamente!";
     }
 }
 
