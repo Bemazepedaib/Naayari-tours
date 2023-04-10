@@ -7,7 +7,7 @@ const { EventType } = require('../types/typeDefs');
 
 const events = {
     type: new GraphQLList(EventType),
-    resolve(parent, args) {
+    resolve(_, __) {
         return Event.find()
     }
 }
@@ -15,8 +15,8 @@ const events = {
 const event = {
     type: EventType,
     args: { eventDate: { type: GraphQLString } },
-    resolve(parent, args) {
-        return Event.find({ eventDate: args.eventDate })
+    resolve(_, { eventDate }) {
+        return Event.find({ eventDate: eventDate })
     }
 }
 

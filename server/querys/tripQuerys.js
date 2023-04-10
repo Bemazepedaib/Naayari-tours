@@ -7,7 +7,7 @@ const { TripType } = require('../types/typeDefs');
 
 const trips = {
     type: new GraphQLList(TripType),
-    resolve(parent, args) {
+    resolve(_, __) {
         return Trip.find()
     }
 }
@@ -15,8 +15,8 @@ const trips = {
 const trip = {
     type: TripType,
     args: { tripName: { type: GraphQLString } },
-    resolve(parent, args) {
-        return Trip.findOne({ tripName: args.tripName })
+    resolve(_, { tripName}) {
+        return Trip.findOne({ tripName: tripName })
     }
 }
 

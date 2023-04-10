@@ -55,15 +55,18 @@ const addUser = {
             userLevel, membership, verified, coupons, preferences, guideDescription, guidePhoto,
             guideSpecial, guideState
         });
-        const exists = await User.findOne({ email })
-        if (exists) throw new Error("El correo ya está en uso");
+        if (!name || !cellphone || !birthDate || !email || !password) throw new Error("No deje ningún campo vacío");
+        const existsMail = await User.findOne({ email: email })
+        if (existsMail) throw new Error("El correo ya está en uso");
+        const existsCell = await User.findOne({ cellphone: cellphone })
+        if (existsCell) throw new Error("El número de teléfono ya está en uso");
         user.password = await encryptPassword(user.password)
         await user.save()
         const token = generateJWToken({
             _id: user._id,
             email: user.email
         });
-        return user.userType+"%"+user.preferences+"%"+token;
+        return token;
     }
 }
 

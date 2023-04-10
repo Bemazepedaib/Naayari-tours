@@ -7,7 +7,7 @@ const { PreferenceType } = require('../types/typeDefs');
 
 const preferences = {
     type: new GraphQLList(PreferenceType),
-    resolve(parent, args){
+    resolve(_, __){
         return Preference.find()
     }
 }
@@ -15,8 +15,8 @@ const preferences = {
 const preference = {
     type: PreferenceType,
     args: { preferenceType: { type: GraphQLString } },
-    resolve(parent, args){
-        return Preference.findOne({preferenceType: args.preferenceType})
+    resolve(_, { preferenceType }){
+        return Preference.findOne({ preferenceType: preferenceType })
     }
 }
 
