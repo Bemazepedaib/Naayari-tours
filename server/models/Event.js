@@ -28,6 +28,10 @@ const EventSchema = new Schema({
             companionName: {
                 type: String,
                 required: false
+            },
+            companionType: {
+                type: String,
+                required: false
             }
         }],
         advancePayment: {

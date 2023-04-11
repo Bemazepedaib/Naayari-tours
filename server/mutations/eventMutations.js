@@ -74,6 +74,25 @@ const updateEvent = {
     }
 }
 
+const updateEventUsers = {
+    type: GraphQLString,
+    args: {
+        eventDate: { type: GraphQLString },
+        eventTrip: { type: GraphQLString },
+        users: { type: GraphQLList(InputEventUserType) }
+    },
+    async resolve(_, { eventDate, eventTrip, users }) {
+        if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
+        const updated = await Event.findOneAndUpdate(
+            { eventDate: eventDate, eventTrip: eventTrip },
+            { $set: { users: users }},
+            { new: true }
+        );
+        if (!updated) throw new Error("No se pudo hacer la reservación correctamente");
+        return "¡Su reserva se ha creado exitósamente!";
+    }
+}
+
 module.exports = {
-    addEvent, deleteEvent, updateEvent
+    addEvent, deleteEvent, updateEvent, updateEventUsers
 }

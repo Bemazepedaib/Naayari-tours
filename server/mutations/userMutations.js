@@ -51,9 +51,8 @@ const addUser = {
     async resolve(_, { name, cellphone, birthDate, email, password, sex, reference, userType, userLevel, membership,
             verified, coupons, preferences, guideDescription, guidePhoto, guideSpecial, guideState }) {
         const user = new User({
-            name, cellphone, birthDate, email, password, sex, reference, userType,
-            userLevel, membership, verified, coupons, preferences, guideDescription, guidePhoto,
-            guideSpecial, guideState
+            name, cellphone, birthDate, email, password, sex, reference, userType, userLevel,
+            membership, verified, coupons, preferences, guideDescription, guidePhoto, guideSpecial, guideState
         });
         if (!name || !cellphone || !birthDate || !email || !password) throw new Error("No deje ningún campo vacío");
         const existsMail = await User.findOne({ email: email })
