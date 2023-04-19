@@ -3,7 +3,7 @@ const Trip = require('../models/Trip');
 // GraphQL types
 const { GraphQLString, GraphQLList, GraphQLNonNull, GraphQLBoolean, GraphQLInt } = require('graphql');
 // User defined types
-const { TripType, InputTripInformationType, InputTripReviewType } = require('../types/typeDefs');
+const { InputTripInformationType, InputTripReviewType } = require('../types/typeDefs');
 
 const addTrip = {
     type: GraphQLString,
@@ -18,8 +18,8 @@ const addTrip = {
     },
     async resolve(_, { tripName, tripInformation, tripKit, tripType, tripRating, tripStatus, tripReview }, { verifiedUser }) {
         if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
-        if (verifiedUser.userType !== "admin") throw new Error("Solo un administrador puede eliminar viajes");
-        const exists = await Trip.findOne({ tripName: tripName });
+        if (verifiedUser.userType !== "admin") throw new Error("Solo un administrador puede agregar viajes");
+        const exists = await Trip.findOne({ tripName });
         if (exists) throw new Error("El viaje ya está creado");
         const trip = new Trip({
             tripName, tripInformation,
@@ -39,8 +39,8 @@ const deleteTrip = {
     },
     async resolve(_, { tripName }, { verifiedUser } ){
         if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
-        if (verifiedUser.userType !== "admin") throw new Error("Solo un administrador puede eliminar usuarios");
-        const deleted = await Trip.findOneAndDelete({ tripName: tripName });
+        if (verifiedUser.userType !== "admin") throw new Error("Solo un administrador puede eliminar viajes");
+        const deleted = await Trip.findOneAndDelete({ tripName });
         if (!deleted) throw new Error("No se pudo eliminar el viaje");
         return "¡Viaje Borrado exitósamente!";
     }
