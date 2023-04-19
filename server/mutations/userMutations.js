@@ -3,7 +3,7 @@ const User = require('../models/User');
 // GraphQL types
 const { GraphQLString, GraphQLList, GraphQLNonNull, GraphQLBoolean } = require('graphql');
 // User defined types
-const { UserType, InputUserCouponType, InputUserPreferenceType } = require('../types/typeDefs');
+const { InputUserCouponType, InputUserPreferenceType } = require('../types/typeDefs');
 // Utils
 const { generateJWToken } = require('../util/auth')
 const { encryptPassword, comparePassword } = require('../util/bcrypt')
@@ -23,7 +23,7 @@ const login = {
             _id: user._id,
             email: user.email
         });
-        return user.userType+"%"+user.preferences+"%"+token;
+        return user.userType + "%" + user.preferences + "%" + token;
     }
 }
 
@@ -49,15 +49,15 @@ const addUser = {
         guideState: { type: GraphQLBoolean },
     },
     async resolve(_, { name, cellphone, birthDate, email, password, sex, reference, userType, userLevel, membership,
-            verified, coupons, preferences, guideDescription, guidePhoto, guideSpecial, guideState }) {
+        verified, coupons, preferences, guideDescription, guidePhoto, guideSpecial, guideState }) {
         const user = new User({
             name, cellphone, birthDate, email, password, sex, reference, userType, userLevel,
             membership, verified, coupons, preferences, guideDescription, guidePhoto, guideSpecial, guideState
         });
         if (!name || !cellphone || !birthDate || !email || !password) throw new Error("No deje ningún campo vacío");
-        const existsMail = await User.findOne({ email: email })
+        const existsMail = await User.findOne({ email })
         if (existsMail) throw new Error("El correo ya está en uso");
-        const existsCell = await User.findOne({ cellphone: cellphone })
+        const existsCell = await User.findOne({ cellphone })
         if (existsCell) throw new Error("El número de teléfono ya está en uso");
         user.password = await encryptPassword(user.password)
         await user.save()
@@ -113,10 +113,15 @@ const updateUser = {
             { email },
             {
                 $set: {
-                    name, cellphone, birthDate, sex, email, newPass,
-                    reference, userType, coupons, preferences,
-                    userLevel, membership, verified, guideDescription,
-                    guidePhoto, guideSpecial, guideState
+                    name, cellphone,
+                    birthDate, email,
+                    password: newPass,
+                    sex, reference,
+                    userType, coupons,
+                    preferences, userLevel,
+                    membership, verified,
+                    guideDescription, guidePhoto,
+                    guideSpecial, guideState
                 }
             },
             { new: true }
@@ -126,6 +131,153 @@ const updateUser = {
     }
 }
 
+const updateUserPassword = {
+    type: GraphQLString,
+    args: {
+        newPassword: { type: GraphQLNonNull(GraphQLString) },
+        password: { type: GraphQLString },
+        email: { type: GraphQLString },
+    },
+    async resolve(_, { newPassword, password, email }, { verifiedUser }) {
+        const updated = null
+        if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
+        if (verifiedUser.userType === "admin") {
+            const newPass = await encryptPassword(newPassword);
+            updated = User.findOneAndUpdate(
+                { email: email },
+                { $set: { password: newPass } },
+                { new: true }
+            )
+        } else {
+            const user = await User.findOne({ email: verifiedUser.email })
+            const validPass = await comparePassword(password, user?.password);
+            if (!validPass) throw new Error("Contraseña incorrecta");
+            const newPass = await encryptPassword(newPassword);
+            updated = User.findOneAndUpdate(
+                { email: verifiedUser.email },
+                { $set: { password: newPass } },
+                { new: true }
+            )
+        }
+        if (!updated) throw new Error("No se pudo actualizar la contraseña");
+        return "¡Contraseña actualizada exitósamente!";
+    }
+}
+
+const updateUserName = {
+    type: GraphQLString,
+    args: {
+        newName: { type: GraphQLNonNull(GraphQLString) },
+        password: { type: GraphQLString },
+        email: { type: GraphQLString },
+    },
+    async resolve(_, { newName, password, email }, { verifiedUser }) {
+        const updated = null
+        if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
+        if (verifiedUser.userType === "admin") {
+            updated = User.findOneAndUpdate(
+                { email: email },
+                { $set: { name: newName } },
+                { new: true }
+            )
+        } else {
+            const user = await User.findOne({ email: verifiedUser.email })
+            const validPass = await comparePassword(password, user.password);
+            if (!validPass) throw new Error("Contraseña incorrecta");
+            updated = User.findOneAndUpdate(
+                { email: verifiedUser.email },
+                { $set: { name: newName } },
+                { new: true }
+            )
+        }
+        if (!updated) throw new Error("No se pudo actualizar el nombre");
+        return "¡Nombre actualizado exitósamente!";
+    }
+}
+
+const updateUserCell = {
+    type: GraphQLString,
+    args: {
+        newCell: { type: GraphQLNonNull(GraphQLString) },
+        password: { type: GraphQLString },
+        email: { type: GraphQLString },
+    },
+    async resolve(_, { newCell, password, email }, { verifiedUser }) {
+        const updated = null
+        if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
+        if (verifiedUser.userType === "admin") {
+            updated = User.findOneAndUpdate(
+                { email: email },
+                { $set: { cellphone: newCell } },
+                { new: true }
+            )
+        } else {
+            const user = await User.findOne({ email: verifiedUser.email })
+            const validPass = await comparePassword(password, user.password);
+            if (!validPass) throw new Error("Contraseña incorrecta");
+            updated = User.findOneAndUpdate(
+                { email: verifiedUser.email },
+                { $set: { cellphone: newCell } },
+                { new: true }
+            )
+        }
+        if (!updated) throw new Error("No se pudo actualizar el número telefónico");
+        return "¡Número telefónico actualizado exitósamente!";
+    }
+}
+
+const updateUserPreferences = {
+    type: GraphQLString,
+    args: {
+        newPref: { type: GraphQLNonNull(GraphQLString) },
+        email: { type: GraphQLString },
+    },
+    async resolve(_, { newPref, email }, { verifiedUser }) {
+        const updated = null
+        if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
+        if (verifiedUser.userType === "admin") {
+            updated = User.findOneAndUpdate(
+                { email: email },
+                { $set: { preferences: newPref } },
+                { new: true }
+            )
+        } else {
+            const user = await User.findOne({ email: verifiedUser.email })
+            updated = User.findOneAndUpdate(
+                { email: verifiedUser.email },
+                { $set: { preferences: newPref } },
+                { new: true }
+            )
+        }
+        if (!updated) throw new Error("No se pudieron actualizar las preferencias");
+        return "¡Preferencias actualizadas exitósamente!";
+    }
+}
+
+const updateUserBirth = {
+    type: GraphQLString,
+    args: {
+        newDate: { type: GraphQLNonNull(GraphQLString) },
+        email: { type: GraphQLString },
+    },
+    async resolve(_, { newDate, email }, { verifiedUser }) {
+        const updated = null
+        if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
+        if (verifiedUser.userType !== "admin") throw new Error("Solo un administrador puede cambiar la fecha de nacimiento")
+        updated = User.findOneAndUpdate(
+            { email: email },
+            { $set: { birthDate: newDate } },
+            { new: true }
+        )
+        if (!updated) throw new Error("No se pudo actualizar la fecha de nacimiento");
+        return "¡Fecha de nacimiento actualizada exitósamente!";
+    }
+}
+
+
 module.exports = {
-    login, addUser, deleteUser, updateUser
+    login, addUser, deleteUser, updateUser, 
+    updateUserPassword, updateUserName, 
+    updateUserCell, updateUserPreferences, 
+    updateUserBirth
 }

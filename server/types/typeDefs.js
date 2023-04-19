@@ -1,8 +1,7 @@
 //GraphQL types
 const {
     GraphQLObjectType, GraphQLID,
-    GraphQLString, GraphQLSchema,
-    GraphQLList, GraphQLNonNull,
+    GraphQLString, GraphQLList,
     GraphQLBoolean, GraphQLInt,
     GraphQLInputObjectType
 } = require('graphql');
