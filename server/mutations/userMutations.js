@@ -231,23 +231,23 @@ const updateUserCell = {
 const updateUserPreferences = {
     type: GraphQLString,
     args: {
-        preferences: { type: GraphQLList(InputUserPreferenceType) },
+        newPref: { type: GraphQLList(InputUserPreferenceType) },
         email: { type: GraphQLString },
     },
-    async resolve(_, { preferences, email }, { verifiedUser }) {
+    async resolve(_, { newPref, email }, { verifiedUser }) {
         let updated = null
         if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
         if (verifiedUser.userType === "admin") {
             if (!email) throw new Error("Porfavor proporciona un email");
             updated = await User.findOneAndUpdate(
                 { email: email },
-                { $set: { preferences } },
+                { $set: { preferences: newPref } },
                 { new: true }
             )
         } else {
             updated = await User.findOneAndUpdate(
                 { email: verifiedUser.email },
-                { $set: { preferences } },
+                { $set: { preferences: newPref } },
                 { new: true }
             )
         }
@@ -275,7 +275,6 @@ const updateUserBirth = {
         return "¡Fecha de nacimiento actualizada exitósamente!";
     }
 }
-
 
 module.exports = {
     login, addUser, deleteUser, updateUser, 
