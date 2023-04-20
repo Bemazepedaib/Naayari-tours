@@ -229,7 +229,7 @@ const updateUserCell = {
 const updateUserPreferences = {
     type: GraphQLString,
     args: {
-        newPref: { type: GraphQLNonNull(GraphQLString) },
+        newPref: { type: GraphQLList(InputUserPreferenceType) },
         email: { type: GraphQLString },
     },
     async resolve(_, { newPref, email }, { verifiedUser }) {
@@ -242,7 +242,6 @@ const updateUserPreferences = {
                 { new: true }
             )
         } else {
-            const user = await User.findOne({ email: verifiedUser.email })
             updated = User.findOneAndUpdate(
                 { email: verifiedUser.email },
                 { $set: { preferences: newPref } },
