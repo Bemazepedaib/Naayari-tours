@@ -2,8 +2,6 @@
 const Preference = require('../models/Preference');
 // GraphQL types
 const { GraphQLString, GraphQLNonNull } = require('graphql');
-// User defined types
-const { PreferenceType } = require('../types/typeDefs');
 
 const addPreference = {
     type: GraphQLString,
@@ -15,7 +13,7 @@ const addPreference = {
     async resolve(_, { preferenceType, preferenceDescription, preferenceIcon }){
         if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
         if (verifiedUser.userType !== "admin") throw new Error("Solo un administrador puede añadir preferencias");
-        const exists = await Event.findOne({ preferenceType: preferenceType });
+        const exists = await Preference.findOne({ preferenceType });
         if (exists) throw new Error("La preferencia ya está creada");
         const preference = new Preference({
             preferenceType: preferenceType,
