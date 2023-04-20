@@ -139,7 +139,7 @@ const updateUserPassword = {
         email: { type: GraphQLString },
     },
     async resolve(_, { newPassword, password, email }, { verifiedUser }) {
-        const updated = null
+        let updated = null
         if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
         if (verifiedUser.userType === "admin") {
             const newPass = await encryptPassword(newPassword);
@@ -172,7 +172,7 @@ const updateUserName = {
         email: { type: GraphQLString },
     },
     async resolve(_, { newName, password, email }, { verifiedUser }) {
-        const updated = null
+        let updated = null
         if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
         if (verifiedUser.userType === "admin") {
             updated = User.findOneAndUpdate(
@@ -203,7 +203,7 @@ const updateUserCell = {
         email: { type: GraphQLString },
     },
     async resolve(_, { newCell, password, email }, { verifiedUser }) {
-        const updated = null
+        let updated = null
         if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
         if (verifiedUser.userType === "admin") {
             updated = User.findOneAndUpdate(
@@ -233,9 +233,10 @@ const updateUserPreferences = {
         email: { type: GraphQLString },
     },
     async resolve(_, { newPref, email }, { verifiedUser }) {
-        const updated = null
-        if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
+        let updated = null
+        //if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
         if (verifiedUser.userType === "admin") {
+            if (!email) throw new Error("Porfavor proporciona un email");
             updated = User.findOneAndUpdate(
                 { email: email },
                 { $set: { preferences: newPref } },
@@ -260,7 +261,7 @@ const updateUserBirth = {
         email: { type: GraphQLString },
     },
     async resolve(_, { newDate, email }, { verifiedUser }) {
-        const updated = null
+        let updated = null
         if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
         if (verifiedUser.userType !== "admin") throw new Error("Solo un administrador puede cambiar la fecha de nacimiento")
         updated = User.findOneAndUpdate(
