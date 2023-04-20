@@ -60,7 +60,7 @@ const updateTrip = {
     async resolve(_, { tripName, tripInformation, tripKit, tripType, tripRating, tripStatus, tripReview }, { verifiedUser }){
         if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
         if (verifiedUser.userType !== "admin") throw new Error("Solo un administrador puede actualizar los viajes");
-        const updated = Trip.findOneAndUpdate(
+        const updated = await Trip.findOneAndUpdate(
             tripName,
             {
                 $set: {

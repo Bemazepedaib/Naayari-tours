@@ -51,7 +51,7 @@ const updateEventUsers = {
         eventTrip: { type: GraphQLString },
         users: { type: GraphQLList(InputEventUserType) }
     },
-    async resolve(_, { eventDate, eventTrip, users }) {
+    async resolve(_, { eventDate, eventTrip, users }, { verifiedUser }) {
         if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
         const updated = await Event.findOneAndUpdate(
             { eventDate, eventTrip },
@@ -72,7 +72,7 @@ const updateEvent = {
         eventStatus: { type: GraphQLBoolean },
         users: { type: GraphQLList(InputEventUserType) }
     },
-    async resolve(_, { eventDate, eventTrip, users }) {
+    async resolve(_, { eventDate, eventTrip, users }, { verifiedUser }) {
         if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
         if (verifiedUser.userType !== "admin") throw new Error("Solo un administrador puede actualizar eventos");
         const updated = await Event.findOneAndUpdate(

@@ -21,7 +21,8 @@ const login = {
         if (!validPass) throw new Error("Datos inválidos");
         const token = generateJWToken({
             _id: user._id,
-            email: user.email
+            email: user.email,
+            userType: user.userType
         });
         return user.userType + "%" + user.preferences + "%" + token;
     }
@@ -63,7 +64,8 @@ const addUser = {
         await user.save()
         const token = generateJWToken({
             _id: user._id,
-            email: user.email
+            email: user.email,
+            userType: user.userType
         });
         return token;
     }
@@ -109,7 +111,7 @@ const updateUser = {
         if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
         if (verifiedUser.userType !== "admin" && verifiedUser.email !== email) throw new Error("No puedes cambiar los datos de otro usuario");
         const newPass = await encryptPassword(password);
-        const updated = User.findOneAndUpdate(
+        const updated = await User.findOneAndUpdate(
             { email },
             {
                 $set: {
@@ -143,7 +145,7 @@ const updateUserPassword = {
         if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
         if (verifiedUser.userType === "admin") {
             const newPass = await encryptPassword(newPassword);
-            updated = User.findOneAndUpdate(
+            updated = await User.findOneAndUpdate(
                 { email: email },
                 { $set: { password: newPass } },
                 { new: true }
@@ -153,7 +155,7 @@ const updateUserPassword = {
             const validPass = await comparePassword(password, user?.password);
             if (!validPass) throw new Error("Contraseña incorrecta");
             const newPass = await encryptPassword(newPassword);
-            updated = User.findOneAndUpdate(
+            updated = await User.findOneAndUpdate(
                 { email: verifiedUser.email },
                 { $set: { password: newPass } },
                 { new: true }
@@ -175,7 +177,7 @@ const updateUserName = {
         let updated = null
         if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
         if (verifiedUser.userType === "admin") {
-            updated = User.findOneAndUpdate(
+            updated = await User.findOneAndUpdate(
                 { email: email },
                 { $set: { name: newName } },
                 { new: true }
@@ -184,7 +186,7 @@ const updateUserName = {
             const user = await User.findOne({ email: verifiedUser.email })
             const validPass = await comparePassword(password, user.password);
             if (!validPass) throw new Error("Contraseña incorrecta");
-            updated = User.findOneAndUpdate(
+            updated = await User.findOneAndUpdate(
                 { email: verifiedUser.email },
                 { $set: { name: newName } },
                 { new: true }
@@ -206,7 +208,7 @@ const updateUserCell = {
         let updated = null
         if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
         if (verifiedUser.userType === "admin") {
-            updated = User.findOneAndUpdate(
+            updated = await User.findOneAndUpdate(
                 { email: email },
                 { $set: { cellphone: newCell } },
                 { new: true }
@@ -215,7 +217,7 @@ const updateUserCell = {
             const user = await User.findOne({ email: verifiedUser.email })
             const validPass = await comparePassword(password, user.password);
             if (!validPass) throw new Error("Contraseña incorrecta");
-            updated = User.findOneAndUpdate(
+            updated = await User.findOneAndUpdate(
                 { email: verifiedUser.email },
                 { $set: { cellphone: newCell } },
                 { new: true }
@@ -229,23 +231,23 @@ const updateUserCell = {
 const updateUserPreferences = {
     type: GraphQLString,
     args: {
-        newPref: { type: GraphQLList(InputUserPreferenceType) },
+        preferences: { type: GraphQLList(InputUserPreferenceType) },
         email: { type: GraphQLString },
     },
-    async resolve(_, { newPref, email }, { verifiedUser }) {
+    async resolve(_, { preferences, email }, { verifiedUser }) {
         let updated = null
-        //if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
+        if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
         if (verifiedUser.userType === "admin") {
             if (!email) throw new Error("Porfavor proporciona un email");
-            updated = User.findOneAndUpdate(
+            updated = await User.findOneAndUpdate(
                 { email: email },
-                { $set: { preferences: newPref } },
+                { $set: { preferences } },
                 { new: true }
             )
         } else {
-            updated = User.findOneAndUpdate(
+            updated = await User.findOneAndUpdate(
                 { email: verifiedUser.email },
-                { $set: { preferences: newPref } },
+                { $set: { preferences } },
                 { new: true }
             )
         }
@@ -264,7 +266,7 @@ const updateUserBirth = {
         let updated = null
         if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
         if (verifiedUser.userType !== "admin") throw new Error("Solo un administrador puede cambiar la fecha de nacimiento")
-        updated = User.findOneAndUpdate(
+        updated = await User.findOneAndUpdate(
             { email: email },
             { $set: { birthDate: newDate } },
             { new: true }
