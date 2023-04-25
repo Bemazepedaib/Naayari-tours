@@ -52,17 +52,17 @@ const updateEventUsers = {
         users: { type: InputEventUserType }
     },
     async resolve(_, { eventDate, eventTrip, users }, { verifiedUser }) {
-        if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
+        if (!verifiedUser) throw new Error("Inicie sesión para continuar.");
         const exists = await Event.findOne({ eventDate, eventTrip })
-        if (!exists) throw new Error("¡Ha ocurrido un error, intente denuevo más tarde porfavor!");
-        if (exists.users.find(email => email.userEmail === users.userEmail)) throw new Error("No haga reservaciones duplicadas");
+        if (!exists) throw new Error("Ha ocurrido un error. Intente de nuevo más tarde por favor.");
+        if (exists.users.find(email => email.userEmail === users.userEmail)) throw new Error("No se permite más de una reservación por usuario para el mismo destino.");
         const updated = await Event.findOneAndUpdate(
             { eventDate, eventTrip },
             { $push: { users } },
             { new: true }
         );
         if (!updated) throw new Error("No se pudo actualizar el evento");
-        return "¡Evento actualizado exitósamente!";
+        return "¡Reserva creada exitosamente!";
     }
 }
 
