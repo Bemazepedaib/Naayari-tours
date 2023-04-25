@@ -49,10 +49,13 @@ const updateEventUsers = {
     args: {
         eventDate: { type: GraphQLString },
         eventTrip: { type: GraphQLString },
-        users: { type: GraphQLList(InputEventUserType) }
+        users: { type: InputEventUserType }
     },
     async resolve(_, { eventDate, eventTrip, users }, { verifiedUser }) {
         if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
+        const exists = await Event.findOne({ eventDate, eventTrip })
+        if (!exists) throw new Error("¡Ha ocurrido un error, intente denuevo más tarde porfavor!");
+        if (exists.users.find(email => email.userEmail === users.userEmail)) throw new Error("No haga reservaciones duplicadas");
         const updated = await Event.findOneAndUpdate(
             { eventDate, eventTrip },
             { $push: { users } },
