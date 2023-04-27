@@ -67,6 +67,20 @@ const UserSchema = new Schema({
             required: false,
         }
     }],
+    trips: [{
+        tripDate: {
+            type: String,
+            required: false
+        },
+        tripName: {
+            type: String,
+            required: false
+        },
+        tripStatus: {
+            type: Boolean,
+            required: false
+        }
+    }],
     userLevel: {
         type: String,    
         required: true,

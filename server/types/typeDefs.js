@@ -86,6 +86,26 @@ const InputUserPreferenceType = new GraphQLInputObjectType({
     })
 })
 
+//UserTrip types
+const UserTripType = new GraphQLObjectType({
+    name: "UserTrip",
+    fields: () => ({
+        tripDate: { type: GraphQLString },
+        tripName: { type: GraphQLString },
+        tripStatus: { type: GraphQLBoolean }
+    })
+})
+
+const InputUserTripType = new GraphQLInputObjectType({
+    name: "InputUserTrip",
+    fields: () => ({
+        tripDate: { type: GraphQLString },
+        tripName: { type: GraphQLString },
+        tripStatus: { type: GraphQLBoolean }
+    })
+})
+
+
 //TripReview type
 const TripReviewType = new GraphQLObjectType({
     name: 'TripReview',
@@ -236,6 +256,7 @@ const EventType = new GraphQLObjectType({
         eventTrip: { type: GraphQLString },
         eventType: { type: GraphQLString },
         eventStatus: { type: GraphQLBoolean },
+        eventGuide: { type: GraphQLString },
         users: { type: GraphQLList(EventUserType) }
     })
 });
@@ -258,6 +279,7 @@ const UserType = new GraphQLObjectType({
         verified: { type: GraphQLBoolean },
         coupons: { type: GraphQLList(UserCouponType) },
         preferences: { type: GraphQLList(UserPreferenceType) },
+        trips: { type: GraphQLList(UserTripType) },
         guideDescription: { type: GraphQLString },
         guidePhoto: { type: GraphQLString },
         guideSpecial: { type: GraphQLString },
@@ -270,6 +292,7 @@ module.exports = {
     EventUserType, InputEventUserType,
     UserCouponType, InputUserCouponType,
     UserPreferenceType, InputUserPreferenceType,
+    UserTripType, InputUserTripType,
     TripReviewType, InputTripReviewType,
     TripDiscountType, InputTripDiscountType,
     TripPriceType, InputTripPriceType,

@@ -19,6 +19,10 @@ const EventSchema = new Schema({
         type: Boolean,
         required: true
     },
+    eventGuide: {
+        type: String,
+        required: true
+    },
     users: [{
         userEmail: {
             type: String,

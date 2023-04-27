@@ -12,9 +12,10 @@ const addEvent = {
         eventTrip: { type: GraphQLString },
         eventType: { type: GraphQLString },
         eventStatus: { type: GraphQLBoolean },
+        eventGuide: { type: GraphQLString },
         users: { type: GraphQLList(InputEventUserType) }
     },
-    async resolve(_, { eventDate, eventTrip, eventType, eventStatus, users }, { verifiedUser }) {
+    async resolve(_, { eventDate, eventTrip, eventType, eventStatus, eventGuide, users }, { verifiedUser }) {
         if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
         if (verifiedUser.userType !== "admin") throw new Error("Solo un administrador puede eliminar eventos");
         const exists = await Event.findOne({ eventDate, eventTrip });
@@ -22,7 +23,7 @@ const addEvent = {
         const event = new Event({
             eventDate, eventTrip,
             eventType, eventStatus,
-            users
+            eventGuide, users
         });
         await event.save();
         return "¡Evento creado exitósamente!"
@@ -73,9 +74,10 @@ const updateEvent = {
         eventTrip: { type: GraphQLString },
         eventType: { type: GraphQLString },
         eventStatus: { type: GraphQLBoolean },
+        eventGuide: { type: GraphQLString },
         users: { type: GraphQLList(InputEventUserType) }
     },
-    async resolve(_, { eventDate, eventTrip, users }, { verifiedUser }) {
+    async resolve(_, { eventDate, eventTrip, eventType, eventStatus, eventGuide, users }, { verifiedUser }) {
         if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
         if (verifiedUser.userType !== "admin") throw new Error("Solo un administrador puede actualizar eventos");
         const updated = await Event.findOneAndUpdate(
@@ -83,7 +85,7 @@ const updateEvent = {
             { $set: { 
                 eventDate, eventTrip,
                 eventType, eventStatus,
-                users
+                eventGuide, users
             }},
             { new: true }
         );

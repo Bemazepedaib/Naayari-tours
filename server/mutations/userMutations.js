@@ -3,7 +3,7 @@ const User = require('../models/User');
 // GraphQL types
 const { GraphQLString, GraphQLList, GraphQLNonNull, GraphQLBoolean } = require('graphql');
 // User defined types
-const { InputUserCouponType, InputUserPreferenceType } = require('../types/typeDefs');
+const { InputUserCouponType, InputUserPreferenceType, InputUserTripType } = require('../types/typeDefs');
 // Utils
 const { generateJWToken } = require('../util/auth')
 const { encryptPassword, comparePassword } = require('../util/bcrypt')
@@ -44,16 +44,17 @@ const addUser = {
         verified: { type: GraphQLNonNull(GraphQLBoolean) },
         coupons: { type: GraphQLList(InputUserCouponType) },
         preferences: { type: GraphQLList(InputUserPreferenceType) },
+        trips: { type: GraphQLList(InputUserTripType) },
         guideDescription: { type: GraphQLString },
         guidePhoto: { type: GraphQLString },
         guideSpecial: { type: GraphQLString },
         guideState: { type: GraphQLBoolean },
     },
     async resolve(_, { name, cellphone, birthDate, email, password, sex, reference, userType, userLevel, membership,
-        verified, coupons, preferences, guideDescription, guidePhoto, guideSpecial, guideState }) {
+        verified, coupons, preferences, trips, guideDescription, guidePhoto, guideSpecial, guideState }) {
         const user = new User({
-            name, cellphone, birthDate, email, password, sex, reference, userType, userLevel,
-            membership, verified, coupons, preferences, guideDescription, guidePhoto, guideSpecial, guideState
+            name, cellphone, birthDate, email, password, sex, reference, userType, userLevel, membership,
+            verified, coupons, preferences, trips, guideDescription, guidePhoto, guideSpecial, guideState
         });
         if (!name || !cellphone || !birthDate || !email || !password) throw new Error("No deje ningún campo vacío");
         const existsMail = await User.findOne({ email })
@@ -101,13 +102,14 @@ const updateUser = {
         verified: { type: GraphQLNonNull(GraphQLBoolean) },
         coupons: { type: GraphQLList(InputUserCouponType) },
         preferences: { type: GraphQLList(InputUserPreferenceType) },
+        trips: { type: GraphQLList(InputUserTripType) },
         guideDescription: { type: GraphQLString },
         guidePhoto: { type: GraphQLString },
         guideSpecial: { type: GraphQLString },
         guideState: { type: GraphQLBoolean },
     },
     async resolve(_, { name, cellphone, birthDate, email, password, sex, reference, userType, userLevel, membership,
-        verified, coupons, preferences, guideDescription, guidePhoto, guideSpecial, guideState }, { verifiedUser }) {
+        verified, coupons, preferences, trips, guideDescription, guidePhoto, guideSpecial, guideState }, { verifiedUser }) {
         if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
         if (verifiedUser.userType !== "admin" && verifiedUser.email !== email) throw new Error("No puedes cambiar los datos de otro usuario");
         const newPass = await encryptPassword(password);
@@ -121,7 +123,7 @@ const updateUser = {
                     sex, reference,
                     userType, coupons,
                     preferences, userLevel,
-                    membership, verified,
+                    membership, verified, trips,
                     guideDescription, guidePhoto,
                     guideSpecial, guideState
                 }
