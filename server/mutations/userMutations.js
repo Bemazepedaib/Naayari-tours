@@ -195,7 +195,7 @@ const updateUserName = {
             )
         }
         if (!updated) throw new Error("No se pudo actualizar el nombre");
-        return "¡Nombre actualizado exitósamente!";
+        return "¡Nombre actualizado exitósamente!"+"%"+newName;
     }
 }
 
@@ -226,7 +226,7 @@ const updateUserCell = {
             )
         }
         if (!updated) throw new Error("No se pudo actualizar el número telefónico");
-        return "¡Número telefónico actualizado exitósamente!";
+        return "¡Número telefónico actualizado exitósamente!"+"%"+newCell;
     }
 }
 
