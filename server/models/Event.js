@@ -46,6 +46,10 @@ const EventSchema = new Schema({
             type: Number,
             required: true
         },
+        fullPayment: {
+            type: Number,
+            required: true
+        },
         fullyPaid: {
             type: Boolean,
             required: true
