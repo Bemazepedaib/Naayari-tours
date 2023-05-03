@@ -14,9 +14,12 @@ const events = {
 
 const event = {
     type: EventType,
-    args: { eventDate: { type: GraphQLString } },
-    resolve(_, { eventDate }) {
-        return Event.find({ eventDate: eventDate })
+    args: { 
+        eventDate: { type: GraphQLString },
+        eventTrip: { type: GraphQLString }
+    },
+    resolve(_, { eventDate, eventTrip }) {
+        return Event.findOne({ eventDate, eventTrip })
     }
 }
 
