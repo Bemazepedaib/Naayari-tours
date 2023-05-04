@@ -11,21 +11,19 @@ const addTrip = {
         tripName: { type: GraphQLString },
         tripInformation: { type: InputTripInformationType },
         tripKit: { type: GraphQLString },
-        tripType: { type: GraphQLString },
         tripRating: { type: GraphQLInt },
         tripStatus: { type: GraphQLBoolean },
         tripReview: { type: GraphQLList(InputTripReviewType) }
     },
-    async resolve(_, { tripName, tripInformation, tripKit, tripType, tripRating, tripStatus, tripReview }, { verifiedUser }) {
+    async resolve(_, { tripName, tripInformation, tripKit, tripRating, tripStatus, tripReview }, { verifiedUser }) {
         if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
         if (verifiedUser.userType !== "admin") throw new Error("Solo un administrador puede agregar viajes");
         const exists = await Trip.findOne({ tripName });
         if (exists) throw new Error("El viaje ya está creado");
         const trip = new Trip({
             tripName, tripInformation,
-            tripKit, tripType,
-            tripRating, tripStatus,
-            tripReview
+            tripKit, tripRating, 
+            tripStatus, tripReview
         });
         await trip.save();
         return "¡Viaje creado exitósamente!";
@@ -52,12 +50,11 @@ const updateTrip = {
         tripName: { type: GraphQLString },
         tripInformation: { type: InputTripInformationType },
         tripKit: { type: GraphQLString },
-        tripType: { type: GraphQLString },
         tripRating: { type: GraphQLInt },
         tripStatus: { type: GraphQLBoolean },
         tripReview: { type: GraphQLList(InputTripReviewType) }
     },
-    async resolve(_, { tripName, tripInformation, tripKit, tripType, tripRating, tripStatus, tripReview }, { verifiedUser }){
+    async resolve(_, { tripName, tripInformation, tripKit, tripRating, tripStatus, tripReview }, { verifiedUser }){
         if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
         if (verifiedUser.userType !== "admin") throw new Error("Solo un administrador puede actualizar los viajes");
         const updated = await Trip.findOneAndUpdate(
@@ -65,8 +62,8 @@ const updateTrip = {
             {
                 $set: {
                     tripInformation, tripKit,
-                    tripType, tripRating,
-                    tripStatus, tripReview
+                    tripRating, tripStatus,
+                    tripReview
                 }
             },
             { new: true }
