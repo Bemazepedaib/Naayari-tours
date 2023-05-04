@@ -67,14 +67,6 @@ const TripSchema = new Schema({
             type: String,
             required: true
         },
-        securityAdvice: {
-            type: String,
-            required: true
-        },
-        restrictions: {
-            type: String,
-            required: true
-        },
         recomendations: {
             type: String,
             required: true

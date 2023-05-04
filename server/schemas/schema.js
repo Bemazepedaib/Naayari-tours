@@ -5,11 +5,13 @@ const { login, addUser, deleteUser, updateUser,
 const { addTrip, deleteTrip, updateTrip } = require('../mutations/tripMutations');
 const { addEvent, deleteEvent, updateEvent, updateEventUsers } = require('../mutations/eventMutations');
 const { addPreference, deletePreference, updatePreference} = require('../mutations/preferenceMutations');
+const { addRequest } = require('../mutations/requestMutations')
 //Querys imports
 const { users, user, me } = require('../querys/userQuerys');
 const { trips, trip } = require('../querys/tripQuerys');
 const { events, event } = require('../querys/eventQuerys');
 const { preferences, preference} = require('../querys/preferenceQuerys');
+const { requests, request} = require('../querys/requestQuerys');
 
 //GraphQL types
 const { GraphQLObjectType, GraphQLSchema } = require('graphql');
@@ -26,7 +28,9 @@ const QueryType = new GraphQLObjectType({
         events,
         event,
         preferences,
-        preference
+        preference,
+        requests,
+        request
     }
 });
 
@@ -52,7 +56,8 @@ const MutationType = new GraphQLObjectType({
         updateEventUsers,
         addPreference,
         deletePreference,
-        updatePreference
+        updatePreference,
+        addRequest
     }
 })
 

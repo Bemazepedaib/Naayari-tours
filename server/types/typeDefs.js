@@ -198,8 +198,6 @@ const TripInformationType = new GraphQLObjectType({
         activities: { type: GraphQLList(TripActivityType) },
         discount: { type: TripDiscountType },
         itinerary: { type: GraphQLString },
-        securityAdvice: { type: GraphQLString },
-        restrictions: { type: GraphQLString },
         recomendations: { type: GraphQLString },
         photo: { type: GraphQLString },
     })
@@ -216,8 +214,6 @@ const InputTripInformationType = new GraphQLInputObjectType({
         activities: { type: GraphQLList(InputTripActivityType) },
         discount: { type: InputTripDiscountType },
         itinerary: { type: GraphQLString },
-        securityAdvice: { type: GraphQLString },
-        restrictions: { type: GraphQLString },
         recomendations: { type: GraphQLString },
         photo: { type: GraphQLString },
     })
@@ -233,6 +229,18 @@ const PreferenceType = new GraphQLObjectType({
         preferenceIcon: { type: GraphQLString }
     })
 })
+
+//Request type
+const RequestType = new GraphQLObjectType({
+    name: 'Request',
+    fields: () => ({
+        id: { type: GraphQLID },
+        requestUser: { type: GraphQLString },
+        requestDate: { type: GraphQLString },
+        requestTrip: { type: GraphQLString },
+        requestStatus: { type: GraphQLString }
+    })
+});
 
 //Trip type
 const TripType = new GraphQLObjectType({
@@ -303,5 +311,6 @@ module.exports = {
     PreferenceType,
     UserType,
     TripType,
-    EventType
+    EventType,
+    RequestType
 }
