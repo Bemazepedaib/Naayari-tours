@@ -237,6 +237,7 @@ const RequestType = new GraphQLObjectType({
         id: { type: GraphQLID },
         requestUser: { type: GraphQLString },
         requestDate: { type: GraphQLString },
+        requestCell: { type: GraphQLString },
         requestTrip: { type: GraphQLString },
         requestStatus: { type: GraphQLString }
     })
