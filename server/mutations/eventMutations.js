@@ -67,6 +67,28 @@ const updateEventUsers = {
     }
 }
 
+const updateEventStatus = {
+    type: GraphQLString,
+    args: {
+        eventDate: { type: GraphQLString },
+        eventTrip: { type: GraphQLString },
+        eventStatus: { type: GraphQLString }
+    },
+    async resolve(_, { eventDate, eventTrip, eventStatus }, { verifiedUser }) {
+        if (!verifiedUser) throw new Error("Inicie sesión para continuar.");
+        if (verifiedUser.userType !== "admin") throw new Error("Solo un administrador puede actualizar el estado de los eventos");
+        const exists = await Event.findOne({ eventDate, eventTrip })
+        if (!exists) throw new Error("Ha ocurrido un error. Intente de nuevo más tarde por favor.");
+        const updated = await Event.findOneAndUpdate(
+            { eventDate, eventTrip },
+            { $set: { eventStatus } },
+            { new: true }
+        );
+        if (!updated) throw new Error("No se pudo actualizar el evento");
+        return "Estado del evento actualizado";
+    }
+}
+
 const updateEvent = {
     type: GraphQLString,
     args: {
@@ -95,5 +117,5 @@ const updateEvent = {
 }
 
 module.exports = {
-    addEvent, deleteEvent, updateEvent, updateEventUsers
+    addEvent, deleteEvent, updateEvent, updateEventUsers, updateEventStatus
 }
