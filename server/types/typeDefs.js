@@ -265,7 +265,7 @@ const EventType = new GraphQLObjectType({
         eventDate: { type: GraphQLString },
         eventTrip: { type: GraphQLString },
         eventType: { type: GraphQLString },
-        eventStatus: { type: GraphQLBoolean },
+        eventStatus: { type: GraphQLString },
         eventGuide: { type: GraphQLString },
         users: { type: GraphQLList(EventUserType) }
     })

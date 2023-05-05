@@ -1,7 +1,7 @@
 // Mongoose Model
 const Event = require('../models/Event');
 // GraphQL types
-const { GraphQLString, GraphQLList, GraphQLBoolean, GraphQLNonNull } = require('graphql');
+const { GraphQLString, GraphQLList, GraphQLNonNull } = require('graphql');
 // User defined types
 const { InputEventUserType, } = require('../types/typeDefs');
 
@@ -11,7 +11,7 @@ const addEvent = {
         eventDate: { type: GraphQLString },
         eventTrip: { type: GraphQLString },
         eventType: { type: GraphQLString },
-        eventStatus: { type: GraphQLBoolean },
+        eventStatus: { type: GraphQLString },
         eventGuide: { type: GraphQLString },
         users: { type: GraphQLList(InputEventUserType) }
     },
@@ -73,7 +73,7 @@ const updateEvent = {
         eventDate: { type: GraphQLString },
         eventTrip: { type: GraphQLString },
         eventType: { type: GraphQLString },
-        eventStatus: { type: GraphQLBoolean },
+        eventStatus: { type: GraphQLString },
         eventGuide: { type: GraphQLString },
         users: { type: GraphQLList(InputEventUserType) }
     },

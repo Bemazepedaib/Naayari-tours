@@ -16,8 +16,9 @@ const EventSchema = new Schema({
         required: true
     },
     eventStatus: {
-        type: Boolean,
-        required: true
+        type: String,
+        required: true,
+        enum: ['active', 'closed', 'inactive']
     },
     eventGuide: {
         type: String,
