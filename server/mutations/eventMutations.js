@@ -85,7 +85,7 @@ const updateEventStatus = {
             { new: true }
         );
         if (!updated) throw new Error("No se pudo actualizar el evento");
-        return "Estado del evento actualizado";
+        return "Estado del evento actualizado%"+eventStatus;
     }
 }
 
