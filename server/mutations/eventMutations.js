@@ -67,6 +67,28 @@ const updateEventUsers = {
     }
 }
 
+const deleteEventUser = {
+    type: GraphQLString,
+    args: {
+        eventDate: { type: GraphQLString },
+        eventTrip: { type: GraphQLString },
+        users: { type: GraphQLList(InputEventUserType) }
+    },
+    async resolve(_, { eventDate, eventTrip, users }, { verifiedUser }) {
+        if (!verifiedUser) throw new Error("Inicie sesión para continuar.");
+        if (verifiedUser.userType !== "admin") throw new Error("Solo un administrador puede eliminar reservas");
+        const exists = await Event.findOne({ eventDate, eventTrip })
+        if (!exists) throw new Error("Ha ocurrido un error. Intente de nuevo más tarde por favor.");
+        const updated = await Event.findOneAndUpdate(
+            { eventDate, eventTrip },
+            { $set: { users } },
+            { new: true }
+        );
+        if (!updated) throw new Error("No se pudo eliminar la reserva");
+        return "¡Reserva eliminada exitosamente!";
+    }
+}
+
 const updateEventStatus = {
     type: GraphQLString,
     args: {
@@ -117,5 +139,5 @@ const updateEvent = {
 }
 
 module.exports = {
-    addEvent, deleteEvent, updateEvent, updateEventUsers, updateEventStatus
+    addEvent, deleteEvent, updateEvent, updateEventUsers, deleteEventUser, updateEventStatus
 }
