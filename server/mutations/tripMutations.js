@@ -22,7 +22,7 @@ const addTrip = {
         if (exists) throw new Error("El viaje ya está creado");
         const trip = new Trip({
             tripName, tripInformation,
-            tripKit, tripRating, 
+            tripKit, tripRating,
             tripStatus, tripReview
         });
         await trip.save();
@@ -33,14 +33,33 @@ const addTrip = {
 const deleteTrip = {
     type: GraphQLString,
     args: {
-        tripName: { type: GraphQLNonNull(GraphQLString) } 
+        tripName: { type: GraphQLNonNull(GraphQLString) }
     },
-    async resolve(_, { tripName }, { verifiedUser } ){
+    async resolve(_, { tripName }, { verifiedUser }) {
         if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
         if (verifiedUser.userType !== "admin") throw new Error("Solo un administrador puede eliminar viajes");
         const deleted = await Trip.findOneAndDelete({ tripName });
         if (!deleted) throw new Error("No se pudo eliminar el viaje");
         return "¡Viaje Borrado exitósamente!";
+    }
+}
+
+const updateTripStatus = {
+    type: GraphQLString,
+    args: {
+        tripName: { type: GraphQLNonNull(GraphQLString) },
+        tripStatus: { type: GraphQLNonNull(GraphQLBoolean) }
+    },
+    async resolve(_, { tripName, tripStatus }, { verifiedUser }) {
+        if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
+        if (verifiedUser.userType !== "admin") throw new Error("Solo un administrador puede eliminar viajes");
+        const updated = await Trip.findOneAndUpdate(
+            { tripName },
+            { $set: { tripStatus } },
+            { new: true }
+        );
+        if (!updated) throw new Error("No se pudo actualizar el estado del viaje");
+        return "¡Estado del viaje actualizdo exitósamente!";
     }
 }
 
@@ -54,7 +73,7 @@ const updateTrip = {
         tripStatus: { type: GraphQLBoolean },
         tripReview: { type: GraphQLList(InputTripReviewType) }
     },
-    async resolve(_, { tripName, tripInformation, tripKit, tripRating, tripStatus, tripReview }, { verifiedUser }){
+    async resolve(_, { tripName, tripInformation, tripKit, tripRating, tripStatus, tripReview }, { verifiedUser }) {
         if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
         if (verifiedUser.userType !== "admin") throw new Error("Solo un administrador puede actualizar los viajes");
         const updated = await Trip.findOneAndUpdate(
@@ -74,5 +93,5 @@ const updateTrip = {
 }
 
 module.exports = {
-    addTrip, deleteTrip, updateTrip
+    addTrip, deleteTrip, updateTripStatus, updateTrip
 }
