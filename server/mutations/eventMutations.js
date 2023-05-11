@@ -1,9 +1,9 @@
 // Mongoose Model
 const Event = require('../models/Event');
 // GraphQL types
-const { GraphQLString, GraphQLList, GraphQLNonNull } = require('graphql');
+const { GraphQLString, GraphQLList, GraphQLNonNull, GraphQLObjectType } = require('graphql');
 // User defined types
-const { InputEventUserType, } = require('../types/typeDefs');
+const { InputEventUserType, EventUserType } = require('../types/typeDefs');
 
 const addEvent = {
     type: GraphQLString,
@@ -68,24 +68,25 @@ const updateEventUsers = {
 }
 
 const deleteEventUser = {
-    type: GraphQLString,
+    type: GraphQLList(EventUserType),
     args: {
         eventDate: { type: GraphQLString },
         eventTrip: { type: GraphQLString },
-        users: { type: GraphQLList(InputEventUserType) }
+        user: { type: GraphQLString }
     },
-    async resolve(_, { eventDate, eventTrip, users }, { verifiedUser }) {
+    async resolve(_, { eventDate, eventTrip, user }, { verifiedUser }) {
         if (!verifiedUser) throw new Error("Inicie sesión para continuar.");
         if (verifiedUser.userType !== "admin") throw new Error("Solo un administrador puede eliminar reservas");
         const exists = await Event.findOne({ eventDate, eventTrip })
         if (!exists) throw new Error("Ha ocurrido un error. Intente de nuevo más tarde por favor.");
+        const users = exists.users.filter(item => item.userEmail !== user)
         const updated = await Event.findOneAndUpdate(
             { eventDate, eventTrip },
             { $set: { users } },
             { new: true }
         );
         if (!updated) throw new Error("No se pudo eliminar la reserva");
-        return "¡Reserva eliminada exitosamente!";
+        return users
     }
 }
 
@@ -107,7 +108,7 @@ const updateEventStatus = {
             { new: true }
         );
         if (!updated) throw new Error("No se pudo actualizar el evento");
-        return "Estado del evento actualizado%"+eventStatus;
+        return "Estado del evento actualizado%" + eventStatus;
     }
 }
 
@@ -126,11 +127,13 @@ const updateEvent = {
         if (verifiedUser.userType !== "admin") throw new Error("Solo un administrador puede actualizar eventos");
         const updated = await Event.findOneAndUpdate(
             { eventDate, eventTrip },
-            { $set: { 
-                eventDate, eventTrip,
-                eventType, eventStatus,
-                eventGuide, users
-            }},
+            {
+                $set: {
+                    eventDate, eventTrip,
+                    eventType, eventStatus,
+                    eventGuide, users
+                }
+            },
             { new: true }
         );
         if (!updated) throw new Error("No se pudo hacer la reservación correctamente");

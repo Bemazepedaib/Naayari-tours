@@ -33,6 +33,7 @@ const EventUserType = new GraphQLObjectType({
         companion: { type: GraphQLList(EventCompanionType) },
         advancePayment: { type: GraphQLInt },
         fullPayment: { type: GraphQLInt },
+        advancePaid: { type: GraphQLBoolean },
         fullyPaid: { type: GraphQLBoolean },
         observations: { type: GraphQLString }
     })
@@ -45,6 +46,7 @@ const InputEventUserType = new GraphQLInputObjectType({
         companion: { type: GraphQLList(InputEventCompanionType) },
         advancePayment: { type: GraphQLInt },
         fullPayment: { type: GraphQLInt },
+        advancePaid: { type: GraphQLBoolean },
         fullyPaid: { type: GraphQLBoolean },
         observations: { type: GraphQLString }
     })
