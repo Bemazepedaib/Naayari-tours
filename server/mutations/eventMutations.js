@@ -1,7 +1,7 @@
 // Mongoose Model
 const Event = require('../models/Event');
 // GraphQL types
-const { GraphQLString, GraphQLList, GraphQLNonNull, GraphQLObjectType } = require('graphql');
+const { GraphQLString, GraphQLList, GraphQLNonNull } = require('graphql');
 // User defined types
 const { InputEventUserType, EventUserType } = require('../types/typeDefs');
 
@@ -102,7 +102,7 @@ const updateEventUser = {
     async resolve(_, { eventDateFrom, eventTripFrom, eventDateTo, eventTripTo, user }, { verifiedUser }){
         if (!verifiedUser) throw new Error("Inicie sesión para continuar.");
         if (verifiedUser.userType !== "admin") throw new Error("Solo un administrador puede eliminar reservas.");
-        const exists = await Event.findOne({ eventDateFrom, eventTripFrom })
+        const exists = await Event.findOne({ eventDate: eventDateFrom, eventTrip: eventTripFrom })
         if (!exists) throw new Error("Ha ocurrido un error. Intente de nuevo más tarde por favor.");
         const users = exists.users.filter(item => item.userEmail !== user)
         const userPush = exists.users.filter(item => item.userEmail === user)
