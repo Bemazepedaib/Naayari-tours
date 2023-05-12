@@ -90,6 +90,38 @@ const deleteEventUser = {
     }
 }
 
+const updateEventUser = {
+    type: GraphQLList(EventUserType),
+    args: {
+        eventDateFrom: { type: GraphQLString },
+        eventTripFrom: { type: GraphQLString },
+        eventDateTo: { type: GraphQLString },
+        eventTripTo: { type: GraphQLString },
+        user: { type: GraphQLString }
+    },
+    async resolve(_, { eventDateFrom, eventTripFrom, eventDateTo, eventTripTo, user }, { verifiedUser }){
+        if (!verifiedUser) throw new Error("Inicie sesión para continuar.");
+        if (verifiedUser.userType !== "admin") throw new Error("Solo un administrador puede eliminar reservas.");
+        const exists = await Event.findOne({ eventDateFrom, eventTripFrom })
+        if (!exists) throw new Error("Ha ocurrido un error. Intente de nuevo más tarde por favor.");
+        const users = exists.users.filter(item => item.userEmail !== user)
+        const userPush = exists.users.filter(item => item.userEmail === user)
+        const updatedFrom = await Event.findOneAndUpdate(
+            { eventDate: eventDateFrom, eventTrip: eventTripFrom },
+            { $set: { users } },
+            { new: true }
+        );
+        if (!updatedFrom) throw new Error("¡Algo ha salido mal! Intente de nuevo más tarde.");
+        const updatedTo = await Event.findOneAndUpdate(
+            { eventDate: eventDateTo, eventTrip: eventTripTo },
+            { $push: { users: userPush } },
+            { new: true }
+        );
+        if (!updatedTo) throw new Error("¡Algo ha salido mal! Intente de nuevo más tarde.");
+        return users
+    }
+}
+
 const updateEventStatus = {
     type: GraphQLString,
     args: {
@@ -142,5 +174,5 @@ const updateEvent = {
 }
 
 module.exports = {
-    addEvent, deleteEvent, updateEvent, updateEventUsers, deleteEventUser, updateEventStatus
+    addEvent, deleteEvent, updateEvent, updateEventUsers, deleteEventUser, updateEventUser, updateEventStatus
 }
