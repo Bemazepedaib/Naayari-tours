@@ -165,7 +165,29 @@ const updateEventStatus = {
             { new: true }
         );
         if (!updated) throw new Error("No se pudo actualizar el evento");
-        return "Estado del evento actualizado%" + eventStatus;
+        return eventStatus;
+    }
+}
+
+const updateEventGuide = {
+    type: GraphQLString,
+    args: {
+        eventDate: { type: GraphQLString },
+        eventTrip: { type: GraphQLString },
+        eventGuide: { type: GraphQLString }
+    },
+    async resolve(_, { eventDate, eventTrip, eventGuide }, { verifiedUser }) {
+        if (!verifiedUser) throw new Error("Inicie sesión para continuar.");
+        if (verifiedUser.userType !== "admin") throw new Error("Solo un administrador puede actualizar el guia asígnado al evento");
+        const exists = await Event.findOne({ eventDate, eventTrip })
+        if (!exists) throw new Error("Ha ocurrido un error. Intente de nuevo más tarde por favor.");
+        const updated = await Event.findOneAndUpdate(
+            { eventDate, eventTrip },
+            { $set: { eventGuide: eventGuide } },
+            { new: true }
+        );
+        if (!updated) throw new Error("No se pudo actualizar el evento");
+        return eventGuide.split("|")[1]
     }
 }
 
@@ -200,5 +222,5 @@ const updateEvent = {
 
 module.exports = {
     addEvent, deleteEvent, updateEvent, updateEventUsers, deleteEventUser, updateEventUser, updateEventUserAdvancePaid, 
-    updateEventStatus
+    updateEventStatus, updateEventGuide
 }
