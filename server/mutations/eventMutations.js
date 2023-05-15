@@ -1,7 +1,7 @@
 // Mongoose Model
 const Event = require('../models/Event');
 // GraphQL types
-const { GraphQLString, GraphQLList, GraphQLNonNull } = require('graphql');
+const { GraphQLString, GraphQLList, GraphQLNonNull, GraphQLBoolean } = require('graphql');
 // User defined types
 const { InputEventUserType, EventUserType } = require('../types/typeDefs');
 
@@ -122,6 +122,31 @@ const updateEventUser = {
     }
 }
 
+const updateEventUserAdvancePaid = {
+    type: GraphQLBoolean,
+    args: {
+        eventDate: { type: GraphQLString },
+        eventTrip: { type: GraphQLString },
+        user: { type: GraphQLString },
+        newState: { type: GraphQLBoolean },
+    },
+    async resolve(_, { eventDate, eventTrip, user, newState }, { verifiedUser }) {
+        if (!verifiedUser) throw new Error("Inicie sesión para continuar.");
+        if (verifiedUser.userType !== "admin") throw new Error("Solo un administrador puede eliminar reservas");
+        let exists = await Event.findOne({ eventDate, eventTrip })
+        if (!exists) throw new Error("Ha ocurrido un error. Intente de nuevo más tarde por favor.");
+        const userIndex = exists.users.findIndex(item => item.userEmail === user)
+        exists.users[userIndex].advancePaid = newState
+        const updated = await Event.findOneAndUpdate(
+            { eventDate, eventTrip },
+            { $set: { users: exists.users } },
+            { new: true }
+        );
+        if (!updated) throw new Error("No se pudo eliminar la reserva");
+        return exists.users[userIndex].advancePaid
+    }
+}
+
 const updateEventStatus = {
     type: GraphQLString,
     args: {
@@ -174,5 +199,6 @@ const updateEvent = {
 }
 
 module.exports = {
-    addEvent, deleteEvent, updateEvent, updateEventUsers, deleteEventUser, updateEventUser, updateEventStatus
+    addEvent, deleteEvent, updateEvent, updateEventUsers, deleteEventUser, updateEventUser, updateEventUserAdvancePaid, 
+    updateEventStatus
 }
