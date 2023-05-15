@@ -274,7 +274,7 @@ const updateUserBirth = {
             { new: true }
         )
         if (!updated) throw new Error("No se pudo actualizar la fecha de nacimiento");
-        return "¡Fecha de nacimiento actualizada exitósamente!";
+        return "¡Fecha de nacimiento actualizada exitósamente!"+"%"+newDate;
     }
 }
 
