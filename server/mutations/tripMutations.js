@@ -77,7 +77,7 @@ const updateTrip = {
         if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
         if (verifiedUser.userType !== "admin") throw new Error("Solo un administrador puede actualizar los viajes");
         const updated = await Trip.findOneAndUpdate(
-            tripName,
+            { tripName },
             {
                 $set: {
                     tripInformation, tripKit,
