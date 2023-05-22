@@ -92,6 +92,24 @@ const updateTrip = {
     }
 }
 
+const addReview = {
+    type: GraphQLString,
+    args: {
+        tripName: { type: GraphQLString },
+        tripReview: { type: InputTripReviewType }
+    },
+    async resolve(_, { tripName, tripReview }, { verifiedUser }) {
+        if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
+        const updated = await Trip.findOneAndUpdate(
+            { tripName },
+            { $push: { tripReview } },
+            { new: true }
+        );
+        if (!updated) throw new Error("No se pudo agregar la reseña");
+        return "¡Reseña agregada exitósamente!";
+    }
+}
+
 module.exports = {
-    addTrip, deleteTrip, updateTripStatus, updateTrip
+    addTrip, deleteTrip, updateTripStatus, updateTrip, addReview
 }
