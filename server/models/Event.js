@@ -30,15 +30,19 @@ const EventSchema = new Schema({
             required: true
         },
         companion: [{
-            companionName: {
-                type: String,
-                required: false
-            },
             companionType: {
                 type: String,
                 required: false
             },
+            companionName: {
+                type: String,
+                required: false
+            },
             companionCell: {
+                type: String,
+                required: false
+            },
+            companionBirthdate: {
                 type: String,
                 required: false
             }

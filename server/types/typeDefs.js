@@ -10,18 +10,20 @@ const {
 const EventCompanionType = new GraphQLObjectType({
     name: 'EventCompanion',
     fields: () => ({
-        companionName: { type: GraphQLString },
         companionType: { type: GraphQLString },
-        companionCell: { type: GraphQLString }
+        companionName: { type: GraphQLString },
+        companionCell: { type: GraphQLString },
+        companionBirthdate: { type: GraphQLString }
     })
 })
 
 const InputEventCompanionType = new GraphQLInputObjectType({
     name: 'InputEventCompanion',
     fields: () => ({
-        companionName: { type: GraphQLString },
         companionType: { type: GraphQLString },
-        companionCell: { type: GraphQLString }
+        companionName: { type: GraphQLString },
+        companionCell: { type: GraphQLString },
+        companionBirthdate: { type: GraphQLString }
     })
 })
 
