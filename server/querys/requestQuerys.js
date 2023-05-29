@@ -18,7 +18,7 @@ const request = {
         requestUser: { type: GraphQLString },
     },
     resolve(_, { requestUser }) {
-        return Event.findOne({ requestUser })
+        return Request.findOne({ requestUser })
     }
 }
 
