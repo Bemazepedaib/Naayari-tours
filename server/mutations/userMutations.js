@@ -7,6 +7,7 @@ const { InputUserCouponType, InputUserPreferenceType, InputUserTripType } = requ
 // Utils
 const { generateJWToken } = require('../util/auth')
 const { encryptPassword, comparePassword } = require('../util/bcrypt')
+const nodemailer = require('nodemailer');
 
 const login = {
     type: GraphQLString,
@@ -195,7 +196,7 @@ const updateUserName = {
             )
         }
         if (!updated) throw new Error("No se pudo actualizar el nombre");
-        return "¡Nombre actualizado exitósamente!"+"%"+newName;
+        return "¡Nombre actualizado exitósamente!" + "%" + newName;
     }
 }
 
@@ -226,7 +227,7 @@ const updateUserCell = {
             )
         }
         if (!updated) throw new Error("No se pudo actualizar el número telefónico");
-        return "¡Número telefónico actualizado exitósamente!"+"%"+newCell;
+        return "¡Número telefónico actualizado exitósamente!" + "%" + newCell;
     }
 }
 
@@ -274,13 +275,58 @@ const updateUserBirth = {
             { new: true }
         )
         if (!updated) throw new Error("No se pudo actualizar la fecha de nacimiento");
-        return "¡Fecha de nacimiento actualizada exitósamente!"+"%"+newDate;
+        return "¡Fecha de nacimiento actualizada exitósamente!" + "%" + newDate;
     }
 }
+const giveCoupons = {
+    type: GraphQLString,
+    async resolve(_, __) {
+        const users = await User.find({ userType: 'client', userLevel: { $ne: "0" } });
+        const currentDate = new Date().toISOString().split("T")[0].split("-").reverse().join("/");
+        const transporter = nodemailer.createTransport({
+            host: 'smtp.gmail.com',
+            port: 465,
+            auth: {
+                user: 'benjaminzepedaibarra@gmail.com',
+                pass: 'jztteouqztlnazma'
+            }
+        });
+        const promises = users.map(async (user) => {
+            const fecha = user.birthDate.split("/");
+            if (fecha[0] === currentDate[0] && fecha[1] === currentDate[1]) {
+                const mailOptions = {
+                    from: 'benjaminzepedaibarra@gmail.com',
+                    to: user.email,
+                    subject: `¡Felíz cumpleaños ${user.name}!`,
+                    text: `Debemos hacer un html para el correo`
+                };
+                const info = await transporter.sendMail(mailOptions);
+                const coupon = {
+                    couponType: 'birthdayGift',
+                    couponDescription: "Este es un regalo por tu cumpleaños",
+                    couponAmount: 100,
+                    couponDate: currentDate,
+                    couponApplied: false
+                };
+                const updated = await User.findOneAndUpdate(
+                    { email: user.email },
+                    { $push: { coupons: coupon } },
+                    { new: true }
+                );
+                if (!updated) {
+                    throw new Error("No se pudo agregar el cupon");
+                }
+                return 'Email sent: ' + info.response;
+            }
+        });
+        await Promise.all(promises);
+        return "Terminó el proceso de agregado de cupones";
+    }
+};
 
 module.exports = {
-    login, addUser, deleteUser, updateUser, 
-    updateUserPassword, updateUserName, 
-    updateUserCell, updateUserPreferences, 
-    updateUserBirth
+    login, addUser, deleteUser, updateUser,
+    updateUserPassword, updateUserName,
+    updateUserCell, updateUserPreferences,
+    updateUserBirth, giveCoupons
 }
