@@ -17,6 +17,12 @@ const giveCoupons = gql`
     }
  `;
 
+const updateDiscount = gql`
+    mutation {
+        updateDiscount
+    }
+`;
+
 function performMutation() {
     client.mutate({ mutation: giveCoupons })
         .then(res => {
@@ -25,6 +31,13 @@ function performMutation() {
         .catch(error => {
             console.log(error.message)
         })
+    client.mutate({ mutation: updateDiscount })
+        .then(res => {
+            console.log(res.data.updateDiscount)
+        })
+        .catch(error => {
+            console.log(error.message)
+        })
 }
 
-const job = schedule.scheduleJob('* * * * * *', performMutation);
+const job = schedule.scheduleJob('0 0 * * *', performMutation);

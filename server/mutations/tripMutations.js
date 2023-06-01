@@ -110,6 +110,36 @@ const addReview = {
     }
 }
 
+const updateDiscount = {
+    type: GraphQLString,
+    async resolve(_, __) {
+        const trips = await Trip.find({ 'tripInformation.discount.available': true });
+        const currentDate = new Date().toISOString().split("T")[0].split("-").reverse();
+        const promises = trips.map(async (trip) => {
+            const dateEnd = trip.tripInformation.discount.dateEnd.split("/");
+            const newTripInformation = { ...trip.tripInformation };
+            newTripInformation.discount.available = false;
+
+            if (currentDate[1] > dateEnd[1] || (currentDate[1] === dateEnd[1] && currentDate[0] > dateEnd[0])) {
+                const updated = await Trip.findOneAndUpdate(
+                    { tripName: trip.tripName },
+                    { $set: { tripInformation: newTripInformation } },
+                    { new: true }
+                );
+
+                if (!updated) {
+                    throw new Error("No se pudo deshabilitar el descuento");
+                }
+
+                return "¡Descuento deshabilitado exitósamente!";
+            }
+        });
+        await Promise.all(promises);
+        return "Terminó el proceso de deshabilitar descuentos";
+    }
+};
+
+
 module.exports = {
-    addTrip, deleteTrip, updateTripStatus, updateTrip, addReview
+    addTrip, deleteTrip, updateTripStatus, updateTrip, addReview, updateDiscount
 }

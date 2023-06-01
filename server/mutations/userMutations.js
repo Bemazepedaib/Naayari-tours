@@ -8,6 +8,7 @@ const { InputUserCouponType, InputUserPreferenceType, InputUserTripType } = requ
 const { generateJWToken } = require('../util/auth')
 const { encryptPassword, comparePassword } = require('../util/bcrypt')
 const nodemailer = require('nodemailer');
+require('dotenv').config({ path: '../../.env' })
 
 const login = {
     type: GraphQLString,
@@ -287,15 +288,15 @@ const giveCoupons = {
             host: 'smtp.gmail.com',
             port: 465,
             auth: {
-                user: 'benjaminzepedaibarra@gmail.com',
-                pass: 'jztteouqztlnazma'
+                user: process.env.NODEMAILER_EMAIL,
+                pass: process.env.NODEMAILER_PASS
             }
         });
         const promises = users.map(async (user) => {
             const fecha = user.birthDate.split("/");
             if (fecha[0] === currentDate[0] && fecha[1] === currentDate[1]) {
                 const mailOptions = {
-                    from: 'benjaminzepedaibarra@gmail.com',
+                    from: process.env.NODEMAILER_EMAIL,
                     to: user.email,
                     subject: `¡Felíz cumpleaños ${user.name}!`,
                     text: `Debemos hacer un html para el correo`
