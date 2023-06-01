@@ -63,7 +63,7 @@ const updateRequest = {
         if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
         if (verifiedUser.userType !== "admin") throw new Error("Solo un administrador puede actualizar el estado de la solicitud");
         const updated = await Request.findOneAndUpdate(
-            requestUser,
+            { requestUser },
             { $set: { requestStatus }},
             { new: true }
         );
