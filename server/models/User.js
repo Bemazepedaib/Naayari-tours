@@ -90,10 +90,6 @@ const UserSchema = new Schema({
         type: Boolean,    
         required: true,
     },
-    verified: {
-        type: Boolean,
-        required: true
-    },
     guideDescription: {
         type: String,
         required: false

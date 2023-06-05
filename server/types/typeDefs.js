@@ -290,7 +290,6 @@ const UserType = new GraphQLObjectType({
         userType: { type: GraphQLString },
         userLevel: { type: GraphQLString },
         membership: { type: GraphQLBoolean },
-        verified: { type: GraphQLBoolean },
         coupons: { type: GraphQLList(UserCouponType) },
         preferences: { type: GraphQLList(UserPreferenceType) },
         trips: { type: GraphQLList(UserTripType) },
