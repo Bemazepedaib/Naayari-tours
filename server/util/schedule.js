@@ -23,6 +23,12 @@ const updateDiscount = gql`
     }
 `;
 
+const updateLevelMembership = gql`
+    mutation {
+        updateLevelMembership
+    }
+`;
+
 function performMutation() {
     client.mutate({ mutation: giveCoupons })
         .then(res => {
@@ -34,6 +40,13 @@ function performMutation() {
     client.mutate({ mutation: updateDiscount })
         .then(res => {
             console.log(res.data.updateDiscount)
+        })
+        .catch(error => {
+            console.log(error.message)
+        })
+    client.mutate({ mutation: updateLevelMembership })
+        .then(res => {
+            console.log(res.data.updateLevelMembership)
         })
         .catch(error => {
             console.log(error.message)

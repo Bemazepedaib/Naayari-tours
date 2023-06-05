@@ -279,6 +279,7 @@ const updateUserBirth = {
         return "¡Fecha de nacimiento actualizada exitósamente!" + "%" + newDate;
     }
 }
+
 const giveCoupons = {
     type: GraphQLString,
     async resolve(_, __) {
@@ -325,9 +326,48 @@ const giveCoupons = {
     }
 };
 
+const updateLevelMembership = {
+    type: GraphQLString,
+    async resolve(_, __) {
+        const users = await User.find({ userType: 'client' });
+        const promises = users.map(async (user) => {
+            let tripsNumber = 0;
+            user.trips.forEach((trip) => {
+                if (trip.tripStatus === 'inactive') {
+                    tripsNumber += 1;
+                }
+            });
+            let userLevel = '3';
+            let membership = true;
+            switch (tripsNumber) {
+                case 0:
+                    userLevel = '0';
+                    membership = false;
+                    break;
+                case 1:
+                    userLevel = '1';
+                    membership = false;
+                    break;
+                case 2:
+                    userLevel = '2';
+                    break;
+            }
+            await User.findOneAndUpdate(
+                { email: user.email },
+                { $set: { userLevel, membership } },
+                { new: true }
+            );
+        });
+        await Promise.all(promises);
+        return 'Terminó el proceso de actualización de nivel y membresía';
+    },
+};
+
+
 module.exports = {
     login, addUser, deleteUser, updateUser,
     updateUserPassword, updateUserName,
     updateUserCell, updateUserPreferences,
-    updateUserBirth, giveCoupons
+    updateUserBirth, giveCoupons,
+    updateLevelMembership
 }
