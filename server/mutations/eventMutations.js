@@ -1,5 +1,6 @@
 // Mongoose Model
 const Event = require('../models/Event');
+const User = require('../models/User');
 // GraphQL types
 const { GraphQLString, GraphQLList, GraphQLNonNull, GraphQLBoolean } = require('graphql');
 // User defined types
@@ -99,7 +100,7 @@ const updateEventUser = {
         eventTripTo: { type: GraphQLString },
         user: { type: GraphQLString }
     },
-    async resolve(_, { eventDateFrom, eventTripFrom, eventDateTo, eventTripTo, user }, { verifiedUser }){
+    async resolve(_, { eventDateFrom, eventTripFrom, eventDateTo, eventTripTo, user }, { verifiedUser }) {
         if (!verifiedUser) throw new Error("Inicie sesión para continuar.");
         if (verifiedUser.userType !== "admin") throw new Error("Solo un administrador puede eliminar reservas.");
         const exists = await Event.findOne({ eventDate: eventDateFrom, eventTrip: eventTripFrom })
@@ -155,19 +156,50 @@ const updateEventStatus = {
         eventStatus: { type: GraphQLString }
     },
     async resolve(_, { eventDate, eventTrip, eventStatus }, { verifiedUser }) {
-        if (!verifiedUser) throw new Error("Inicie sesión para continuar.");
-        if (verifiedUser.userType !== "admin") throw new Error("Solo un administrador puede actualizar el estado de los eventos");
-        const exists = await Event.findOne({ eventDate, eventTrip })
-        if (!exists) throw new Error("Ha ocurrido un error. Intente de nuevo más tarde por favor.");
+        if (!verifiedUser) { throw new Error("Inicie sesión para continuar."); }
+        if (verifiedUser.userType !== "admin") { throw new Error("Solo un administrador puede actualizar el estado de los eventos"); }
+        const exists = await Event.findOne({ eventDate, eventTrip });
+        if (!exists) { throw new Error("Ha ocurrido un error. Intente de nuevo más tarde por favor."); }
         const updated = await Event.findOneAndUpdate(
             { eventDate, eventTrip },
             { $set: { eventStatus } },
             { new: true }
         );
-        if (!updated) throw new Error("No se pudo actualizar el evento");
+        if (!updated) { throw new Error("No se pudo actualizar el evento"); }
+        if (eventStatus !== "active") {
+            const newTrip = {
+                tripDate: eventDate,
+                tripName: eventTrip,
+                tripStatus: eventStatus
+            };
+            await Promise.all(
+                updated.users.map(async (user) => {
+                    const findUser = await User.findOne({ email: user.userEmail });
+                    const tripIndex = findUser.trips.findIndex(
+                        (trip) => trip.tripDate === newTrip.tripDate && trip.tripName === newTrip.tripName
+                    );
+                    if (tripIndex !== -1) {
+                        if (findUser.trips[tripIndex].tripStatus === newTrip.tripStatus) {
+                            return;
+                        } else {
+                            findUser.trips.splice(tripIndex, 1);
+                            findUser.trips.push(newTrip);
+                        }
+                    } else {
+                        findUser.trips.push(newTrip);
+                    }
+                    await User.findOneAndUpdate(
+                        { email: user.userEmail },
+                        { $set: { trips: findUser.trips } },
+                        { new: true }
+                    );
+                })
+            );
+        }
         return eventStatus;
     }
-}
+};
+
 
 const updateEventGuide = {
     type: GraphQLString,
@@ -221,6 +253,6 @@ const updateEvent = {
 }
 
 module.exports = {
-    addEvent, deleteEvent, updateEvent, updateEventUsers, deleteEventUser, updateEventUser, updateEventUserAdvancePaid, 
+    addEvent, deleteEvent, updateEvent, updateEventUsers, deleteEventUser, updateEventUser, updateEventUserAdvancePaid,
     updateEventStatus, updateEventGuide
 }

@@ -77,8 +77,9 @@ const UserSchema = new Schema({
             required: false
         },
         tripStatus: {
-            type: Boolean,
-            required: false
+            type: String,
+            required: false,
+            enum: ['closed', 'inactive']
         }
     }],
     userLevel: {
