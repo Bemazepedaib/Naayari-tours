@@ -37,20 +37,20 @@ function performMutation() {
         .catch(error => {
             console.log(error.message)
         })
-    client.mutate({ mutation: updateDiscount })
-        .then(res => {
-            console.log(res.data.updateDiscount)
-        })
-        .catch(error => {
-            console.log(error.message)
-        })
-    client.mutate({ mutation: updateLevelMembership })
-        .then(res => {
-            console.log(res.data.updateLevelMembership)
-        })
-        .catch(error => {
-            console.log(error.message)
-        })
+    // client.mutate({ mutation: updateDiscount })
+    //     .then(res => {
+    //         console.log(res.data.updateDiscount)
+    //     })
+    //     .catch(error => {
+    //         console.log(error.message)
+    //     })
+    // client.mutate({ mutation: updateLevelMembership })
+    //     .then(res => {
+    //         console.log(res.data.updateLevelMembership)
+    //     })
+    //     .catch(error => {
+    //         console.log(error.message)
+    //     })
 }
 
-const job = schedule.scheduleJob('0 0 * * *', performMutation);
+const job = schedule.scheduleJob('* * * * * *', performMutation);

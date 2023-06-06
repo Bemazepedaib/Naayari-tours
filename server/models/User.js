@@ -42,7 +42,7 @@ const UserSchema = new Schema({
         couponType: {
             type: String,    
             required: false,
-            enum: ['dateChanged','birthdayGift','gift']
+            enum: ['Fecha Cambiada','Cumple feliz','Regalo']
         },
         couponDescription: {
             type: String,    

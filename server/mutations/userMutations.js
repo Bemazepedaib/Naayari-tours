@@ -282,7 +282,7 @@ const giveCoupons = {
     type: GraphQLString,
     async resolve(_, __) {
         const users = await User.find({ userType: 'client', userLevel: { $ne: "0" } });
-        const currentDate = new Date().toISOString().split("T")[0].split("-").reverse().join("/");
+        const currentDate = new Date().toISOString().split("T")[0].split("-").reverse();
         const transporter = nodemailer.createTransport({
             host: 'smtp.gmail.com',
             port: 465,
@@ -298,14 +298,29 @@ const giveCoupons = {
                     from: process.env.NODEMAILER_EMAIL,
                     to: user.email,
                     subject: `¡Felíz cumpleaños ${user.name}!`,
-                    text: `Debemos hacer un html para el correo`
+                    html: '<html><head><meta charset="UTF-8"><style>'+
+                    `@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@300&display=swap');`+
+                    'body { font-family: Oswald, sans-serif; background-color: #f2f2f2; }'+
+                    '.container { max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f0f0f0;'+
+                    'border-radius: 10px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); text-align: center; }'+
+                    'h1 { color: #00a748; }'+
+                    'p { font-size: 18px; line-height: 1.5; margin: 20px 0; }'+
+                    'img { height: 100px; width: 100px; }'+
+                  '</style></head><body><div class="container">'+
+                    `<h1>¡Feliz Cumpleaños!</h1><p>Querido ${user.name},</p>`+
+                    '<p>¡Hoy es un día muy especial! Quería aprovechar esta ocasión para desearte un cumpleaños lleno de alegría, amor y'+
+                      'felicidad. Espero que este nuevo año de vida esté lleno de momentos maravillosos y que todos tus sueños se hagan'+
+                      'realidad.</p>'+
+                    '<p>Disfruta al máximo de tu día y celebra rodeado de tus seres queridos. ¡Eres una persona increíble y te mereces lo'+
+                      'mejor en este y todos los días!</p>'+
+                    '<p>¡Que tengas un cumpleaños inolvidable!</p><p>Un abrazo,</p><p>Naayari tours.</p></div></body></html>'
                 };
                 const info = await transporter.sendMail(mailOptions);
                 const coupon = {
-                    couponType: 'birthdayGift',
-                    couponDescription: "Este es un regalo por tu cumpleaños",
+                    couponType: 'Cumple feliz',
+                    couponDescription: "Felicidades en tu día especial",
                     couponAmount: 100,
-                    couponDate: currentDate,
+                    couponDate: currentDate.join("/"),
                     couponApplied: false
                 };
                 const updated = await User.findOneAndUpdate(
