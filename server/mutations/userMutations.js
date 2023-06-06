@@ -298,23 +298,23 @@ const giveCoupons = {
                     from: process.env.NODEMAILER_EMAIL,
                     to: user.email,
                     subject: `¡Felíz cumpleaños ${user.name}!`,
-                    html: '<html><head><meta charset="UTF-8"><style>'+
-                    `@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@300&display=swap');`+
-                    'body { font-family: Oswald, sans-serif; background-color: #f2f2f2; }'+
-                    '.container { max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f0f0f0;'+
-                    'border-radius: 10px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); text-align: center; }'+
-                    'h1 { color: #00a748; }'+
-                    'p { font-size: 18px; line-height: 1.5; margin: 20px 0; }'+
-                    'img { height: 100px; width: 100px; }'+
-                  '</style></head><body><div class="container">'+
-                  '<a href="https://lh3.googleusercontent.com/drive-viewer/AFGJ81rzSbzpM7cIO9XIiFVYnuPBOFR78-3NgtYpzy-T_6RhDecOL8tDZqFBE1XjXQVouc3c7PoQxWiC-QV0iMyHCMtnbtLW=s2560?source=screenshot.guru"> <img src="https://lh3.googleusercontent.com/drive-viewer/AFGJ81rzSbzpM7cIO9XIiFVYnuPBOFR78-3NgtYpzy-T_6RhDecOL8tDZqFBE1XjXQVouc3c7PoQxWiC-QV0iMyHCMtnbtLW=s2560" /> </a>'+
-                    `<h1>¡Feliz Cumpleaños!</h1><p>Querido ${user.name},</p>`+
-                    '<p>¡Hoy es un día muy especial! Quería aprovechar esta ocasión para desearte un cumpleaños lleno de alegría, amor y'+
-                      'felicidad. Espero que este nuevo año de vida esté lleno de momentos maravillosos y que todos tus sueños se hagan'+
-                      'realidad.</p>'+
-                    '<p>Disfruta al máximo de tu día y celebra rodeado de tus seres queridos. ¡Eres una persona increíble y te mereces lo'+
-                      'mejor en este y todos los días!</p>'+
-                    '<p>¡Que tengas un cumpleaños inolvidable!</p><p>Un abrazo,</p><p>Naayari tours.</p></div></body></html>'
+                    html: '<html><head><meta charset="UTF-8"><style>' +
+                        `@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@300&display=swap');` +
+                        'body { font-family: Oswald, sans-serif; background-color: #f2f2f2; }' +
+                        '.container { max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f0f0f0;' +
+                        'border-radius: 10px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); text-align: center; }' +
+                        'h1 { color: #00a748; }' +
+                        'p { font-size: 18px; line-height: 1.5; margin: 20px 0; }' +
+                        'img { height: 100px; width: 100px; }' +
+                        '</style></head><body><div class="container">' +
+                        '<a href="https://lh3.googleusercontent.com/drive-viewer/AFGJ81rzSbzpM7cIO9XIiFVYnuPBOFR78-3NgtYpzy-T_6RhDecOL8tDZqFBE1XjXQVouc3c7PoQxWiC-QV0iMyHCMtnbtLW=s2560?source=screenshot.guru"> <img src="https://lh3.googleusercontent.com/drive-viewer/AFGJ81rzSbzpM7cIO9XIiFVYnuPBOFR78-3NgtYpzy-T_6RhDecOL8tDZqFBE1XjXQVouc3c7PoQxWiC-QV0iMyHCMtnbtLW=s2560" /> </a>' +
+                        `<h1>¡Feliz Cumpleaños!</h1><p>Querido ${user.name},</p>` +
+                        '<p>¡Hoy es un día muy especial! Quería aprovechar esta ocasión para desearte un cumpleaños lleno de alegría, amor y' +
+                        'felicidad. Espero que este nuevo año de vida esté lleno de momentos maravillosos y que todos tus sueños se hagan' +
+                        'realidad.</p>' +
+                        '<p>Disfruta al máximo de tu día y celebra rodeado de tus seres queridos. ¡Eres una persona increíble y te mereces lo' +
+                        'mejor en este y todos los días!</p>' +
+                        '<p>¡Que tengas un cumpleaños inolvidable!</p><p>Un abrazo,</p><p>Naayari tours.</p></div></body></html>'
                 };
                 const info = await transporter.sendMail(mailOptions);
                 const coupon = {
@@ -377,11 +377,44 @@ const updateLevelMembership = {
     },
 };
 
+const updateCoupons = {
+    type: GraphQLString,
+    args: {
+        email: { type: GraphQLString },
+        couponType: { type: GraphQLString },
+        couponDate: { type: GraphQLString }
+    },
+    async resolve(_, { email, couponType, couponDate }, { verifiedUser }) {
+        if (!verifiedUser || verifiedUser.userType !== "admin") throw new Error("Debes iniciar sesion como administrador para realizar esta accion");
+        if (verifiedUser.userType === "admin") {
+            const user = await User.findOne({ email });
+            const coupon = user.coupons.find(coupon => coupon.couponDate === couponDate && coupon.couponType === couponType)
+            const couponIndex = user.coupons.findIndex(coupon => coupon.couponDate === couponDate && coupon.couponType === couponType)
+            const newCoupon = {
+                couponType: coupon.couponType,
+                couponDescription: coupon.couponDescription,
+                couponAmount: coupon.couponAmount,
+                couponDate: coupon.couponDate,
+                couponApplied: false
+            }
+            const newCoupons = user.coupons.splice(couponIndex, 1)
+            newCoupons.push(newCoupon)
+            const updated = await User.findOneAndUpdate(
+                { email },
+                { $set: { coupons: newCoupons } },
+                { new: true }
+            )
+            if (!updated) throw new Error("No se pudo actualizar el cupon");
+            return "¡Cupon actualizado exitósamente!";
+        }
+    }
+}
 
 module.exports = {
     login, addUser, deleteUser, updateUser,
     updateUserPassword, updateUserName,
     updateUserCell, updateUserPreferences,
     updateUserBirth, giveCoupons,
-    updateLevelMembership
+    updateLevelMembership,
+    updateCoupons
 }

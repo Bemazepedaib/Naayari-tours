@@ -2,7 +2,7 @@
 const { login, addUser, deleteUser, updateUser, 
         updateUserPassword, updateUserName, updateUserCell,
         updateUserPreferences, updateUserBirth, giveCoupons,
-        updateLevelMembership } = require('../mutations/userMutations');
+        updateLevelMembership, updateCoupons } = require('../mutations/userMutations');
 const { addTrip, deleteTrip, updateTripStatus, updateTrip, addReview, updateDiscount } = require('../mutations/tripMutations');
 const { addEvent, deleteEvent, updateEvent, updateEventUsers, deleteEventUser, updateEventUser, updateEventUserAdvancePaid, updateEventStatus, updateEventGuide } = require('../mutations/eventMutations');
 const { addPreference, deletePreference, updatePreference} = require('../mutations/preferenceMutations');
@@ -50,6 +50,7 @@ const MutationType = new GraphQLObjectType({
         updateUserBirth,
         giveCoupons,
         updateLevelMembership,
+        updateCoupons,
         addTrip,
         deleteTrip,
         updateTripStatus,
