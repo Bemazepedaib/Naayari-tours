@@ -395,13 +395,13 @@ const updateCoupons = {
                 couponDescription: coupon.couponDescription,
                 couponAmount: coupon.couponAmount,
                 couponDate: coupon.couponDate,
-                couponApplied: false
+                couponApplied: true
             }
-            const newCoupons = user.coupons.splice(couponIndex, 1)
-            newCoupons.push(newCoupon)
+            user.coupons.splice(couponIndex, 1)
+            user.coupons.push(newCoupon)
             const updated = await User.findOneAndUpdate(
                 { email },
-                { $set: { coupons: newCoupons } },
+                { $set: { coupons: user.coupons } },
                 { new: true }
             )
             if (!updated) throw new Error("No se pudo actualizar el cupon");
