@@ -3,7 +3,7 @@ const schedule = require('node-schedule');
 require('dotenv').config({ path: '../../.env' })
 
 const link = new HttpLink({
-    uri: 'http://naayari-tours-backend.up.railway.app/NaayarAPI'
+    uri: 'https://naayari-tours-backend.up.railway.app/NaayarAPI'
 })
 
 const client = new ApolloClient({
