@@ -1,9 +1,11 @@
 const { ApolloClient, gql, InMemoryCache, HttpLink } = require('apollo-boost');
 const schedule = require('node-schedule');
+const fetch = require('node-fetch')
 require('dotenv').config({ path: '../../.env' })
 
 const link = new HttpLink({
-    uri: 'https://naayari-tours-backend.up.railway.app/NaayarAPI'
+    uri: 'https://naayari-tours-backend.up.railway.app/NaayarAPI',
+    fetch: fetch
 })
 
 const client = new ApolloClient({
