@@ -71,6 +71,10 @@ const TripSchema = new Schema({
             type: String,
             required: true
         },
+        recommendedPlaces: {
+            type: String,
+            required: true
+        },
         photo: {
             type: String,
             required: true

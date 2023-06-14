@@ -203,6 +203,7 @@ const TripInformationType = new GraphQLObjectType({
         discount: { type: TripDiscountType },
         itinerary: { type: GraphQLString },
         recomendations: { type: GraphQLString },
+        recommendedPlaces: { type: GraphQLString },
         photo: { type: GraphQLString },
     })
 });
@@ -219,6 +220,7 @@ const InputTripInformationType = new GraphQLInputObjectType({
         discount: { type: InputTripDiscountType },
         itinerary: { type: GraphQLString },
         recomendations: { type: GraphQLString },
+        recommendedPlaces: { type: GraphQLString },
         photo: { type: GraphQLString },
     })
 });
