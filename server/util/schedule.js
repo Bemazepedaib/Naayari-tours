@@ -1,6 +1,6 @@
 const { ApolloClient, gql, InMemoryCache, HttpLink } = require('apollo-boost');
 const schedule = require('node-schedule');
-import fetch from 'node-fetch';
+const fetch = require('node-fetch');
 require('dotenv').config({ path: '../../.env' });
 
 const link = new HttpLink({
