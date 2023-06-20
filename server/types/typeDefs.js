@@ -98,7 +98,7 @@ const UserTripType = new GraphQLObjectType({
     fields: () => ({
         tripDate: { type: GraphQLString },
         tripName: { type: GraphQLString },
-        tripStatus: { type: GraphQLBoolean }
+        tripStatus: { type: GraphQLString }
     })
 })
 
@@ -107,7 +107,7 @@ const InputUserTripType = new GraphQLInputObjectType({
     fields: () => ({
         tripDate: { type: GraphQLString },
         tripName: { type: GraphQLString },
-        tripStatus: { type: GraphQLBoolean }
+        tripStatus: { type: GraphQLString }
     })
 })
 
