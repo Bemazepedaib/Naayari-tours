@@ -29,6 +29,10 @@ const EventSchema = new Schema({
             type: String,
             required: true
         },
+        userName: {
+            type: String,
+            required: true
+        },
         companion: [{
             companionType: {
                 type: String,

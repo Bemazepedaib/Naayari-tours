@@ -32,6 +32,7 @@ const EventUserType = new GraphQLObjectType({
     name: 'EventUser',
     fields: () => ({
         userEmail: { type: GraphQLString },
+        userName: { type: GraphQLString },
         companion: { type: GraphQLList(EventCompanionType) },
         advancePayment: { type: GraphQLInt },
         fullPayment: { type: GraphQLInt },
@@ -45,6 +46,7 @@ const InputEventUserType = new GraphQLInputObjectType({
     name: 'InputEventUser',
     fields: () => ({
         userEmail: { type: GraphQLString },
+        userName: { type: GraphQLString },
         companion: { type: GraphQLList(InputEventCompanionType) },
         advancePayment: { type: GraphQLInt },
         fullPayment: { type: GraphQLInt },
