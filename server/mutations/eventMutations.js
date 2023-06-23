@@ -172,6 +172,7 @@ const updateEventStatus = {
                 tripName: eventTrip,
                 tripStatus: eventStatus
             };
+            updated.users.push({ userEmail: updated.eventGuide.split("|")[0] })
             await Promise.all(
                 updated.users.map(async (user) => {
                     const findUser = await User.findOne({ email: user.userEmail });
@@ -204,24 +205,41 @@ const updateEventStatus = {
 const updateEventGuide = {
     type: GraphQLString,
     args: {
-        eventDate: { type: GraphQLString },
-        eventTrip: { type: GraphQLString },
-        eventGuide: { type: GraphQLString }
+      eventDate: { type: GraphQLString },
+      eventTrip: { type: GraphQLString },
+      eventGuide: { type: GraphQLString },
     },
     async resolve(_, { eventDate, eventTrip, eventGuide }, { verifiedUser }) {
-        if (!verifiedUser) throw new Error("Inicie sesión para continuar.");
-        if (verifiedUser.userType !== "admin") throw new Error("Solo un administrador puede actualizar el guia asígnado al evento");
-        const exists = await Event.findOne({ eventDate, eventTrip })
-        if (!exists) throw new Error("Ha ocurrido un error. Intente de nuevo más tarde por favor.");
-        const updated = await Event.findOneAndUpdate(
-            { eventDate, eventTrip },
-            { $set: { eventGuide: eventGuide } },
-            { new: true }
-        );
-        if (!updated) throw new Error("No se pudo actualizar el evento");
-        return eventGuide.split("|")[1]
-    }
-}
+      if (!verifiedUser) throw new Error("Inicie sesión para continuar.");
+      if (verifiedUser.userType !== "admin") throw new Error("Solo un administrador puede actualizar el guía asignado al evento");
+  
+      const exists = await Event.findOne({ eventDate, eventTrip });
+      if (!exists) throw new Error("Ha ocurrido un error. Intente de nuevo más tarde por favor.");
+  
+      const actualGuide = await User.findOneAndUpdate(
+        { email: exists.eventGuide.split("|")[0] },
+        { $pull: { trips: { tripName: eventTrip, tripDate: eventDate } } },
+        { new: true }
+      );
+  
+      const newGuide = await User.findOneAndUpdate(
+        { email: eventGuide.split("|")[0] },
+        { $push: { trips: { tripName: eventTrip, tripDate: eventDate, tripStatus: exists.eventStatus } } },
+        { new: true }
+      );
+  
+      const updated = await Event.findOneAndUpdate(
+        { eventDate, eventTrip },
+        { $set: { eventGuide } },
+        { new: true }
+      );
+  
+      if (!updated) throw new Error("No se pudo actualizar el evento");
+  
+      return eventGuide.split("|")[1];
+    },
+  };
+  
 
 const updateEvent = {
     type: GraphQLString,
