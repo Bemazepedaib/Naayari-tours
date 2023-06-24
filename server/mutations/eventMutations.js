@@ -175,25 +175,27 @@ const updateEventStatus = {
             updated.users.push({ userEmail: updated.eventGuide.split("|")[0] })
             await Promise.all(
                 updated.users.map(async (user) => {
-                    const findUser = await User.findOne({ email: user.userEmail });
-                    const tripIndex = findUser.trips.findIndex(
-                        (trip) => trip.tripDate === newTrip.tripDate && trip.tripName === newTrip.tripName
-                    );
-                    if (tripIndex !== -1) {
-                        if (findUser.trips[tripIndex].tripStatus === newTrip.tripStatus) {
-                            return;
+                    if (user.userEmail.split("@") > 1) {
+                        const findUser = await User.findOne({ email: user.userEmail });
+                        const tripIndex = findUser.trips.findIndex(
+                            (trip) => trip.tripDate === newTrip.tripDate && trip.tripName === newTrip.tripName
+                        );
+                        if (tripIndex !== -1) {
+                            if (findUser.trips[tripIndex].tripStatus === newTrip.tripStatus) {
+                                return;
+                            } else {
+                                findUser.trips.splice(tripIndex, 1);
+                                findUser.trips.push(newTrip);
+                            }
                         } else {
-                            findUser.trips.splice(tripIndex, 1);
                             findUser.trips.push(newTrip);
                         }
-                    } else {
-                        findUser.trips.push(newTrip);
+                        await User.findOneAndUpdate(
+                            { email: user.userEmail },
+                            { $set: { trips: findUser.trips } },
+                            { new: true }
+                        );
                     }
-                    await User.findOneAndUpdate(
-                        { email: user.userEmail },
-                        { $set: { trips: findUser.trips } },
-                        { new: true }
-                    );
                 })
             );
         }
@@ -205,41 +207,41 @@ const updateEventStatus = {
 const updateEventGuide = {
     type: GraphQLString,
     args: {
-      eventDate: { type: GraphQLString },
-      eventTrip: { type: GraphQLString },
-      eventGuide: { type: GraphQLString },
+        eventDate: { type: GraphQLString },
+        eventTrip: { type: GraphQLString },
+        eventGuide: { type: GraphQLString },
     },
     async resolve(_, { eventDate, eventTrip, eventGuide }, { verifiedUser }) {
-      if (!verifiedUser) throw new Error("Inicie sesión para continuar.");
-      if (verifiedUser.userType !== "admin") throw new Error("Solo un administrador puede actualizar el guía asignado al evento");
-  
-      const exists = await Event.findOne({ eventDate, eventTrip });
-      if (!exists) throw new Error("Ha ocurrido un error. Intente de nuevo más tarde por favor.");
-  
-      const actualGuide = await User.findOneAndUpdate(
-        { email: exists.eventGuide.split("|")[0] },
-        { $pull: { trips: { tripName: eventTrip, tripDate: eventDate } } },
-        { new: true }
-      );
-  
-      const newGuide = await User.findOneAndUpdate(
-        { email: eventGuide.split("|")[0] },
-        { $push: { trips: { tripName: eventTrip, tripDate: eventDate, tripStatus: exists.eventStatus } } },
-        { new: true }
-      );
-  
-      const updated = await Event.findOneAndUpdate(
-        { eventDate, eventTrip },
-        { $set: { eventGuide } },
-        { new: true }
-      );
-  
-      if (!updated) throw new Error("No se pudo actualizar el evento");
-  
-      return eventGuide.split("|")[1];
+        if (!verifiedUser) throw new Error("Inicie sesión para continuar.");
+        if (verifiedUser.userType !== "admin") throw new Error("Solo un administrador puede actualizar el guía asignado al evento");
+
+        const exists = await Event.findOne({ eventDate, eventTrip });
+        if (!exists) throw new Error("Ha ocurrido un error. Intente de nuevo más tarde por favor.");
+
+        const actualGuide = await User.findOneAndUpdate(
+            { email: exists.eventGuide.split("|")[0] },
+            { $pull: { trips: { tripName: eventTrip, tripDate: eventDate } } },
+            { new: true }
+        );
+
+        const newGuide = await User.findOneAndUpdate(
+            { email: eventGuide.split("|")[0] },
+            { $push: { trips: { tripName: eventTrip, tripDate: eventDate, tripStatus: exists.eventStatus } } },
+            { new: true }
+        );
+
+        const updated = await Event.findOneAndUpdate(
+            { eventDate, eventTrip },
+            { $set: { eventGuide } },
+            { new: true }
+        );
+
+        if (!updated) throw new Error("No se pudo actualizar el evento");
+
+        return eventGuide.split("|")[1];
     },
-  };
-  
+};
+
 
 const updateEvent = {
     type: GraphQLString,
