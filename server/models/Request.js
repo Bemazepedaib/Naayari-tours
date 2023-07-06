@@ -7,6 +7,10 @@ const RequestSchema = new Schema({
         type: String,
         required: true
     },
+    requestName: {
+        type: String,
+        required: true
+    },
     requestCell: {
         type: String,
         required: true

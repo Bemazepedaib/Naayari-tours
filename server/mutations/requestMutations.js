@@ -7,12 +7,13 @@ const addRequest = {
     type: GraphQLString,
     args: {
         requestUser: { type: GraphQLNonNull(GraphQLString) },
+        requestName: { type: GraphQLNonNull(GraphQLString) },
         requestCell: { type: GraphQLNonNull(GraphQLString) },
         requestDate: { type: GraphQLNonNull(GraphQLString) },
         requestTrip: { type: GraphQLNonNull(GraphQLString) },
         requestStatus: { type: GraphQLNonNull(GraphQLString) },
     },
-    async resolve(_, { requestUser, requestCell, requestDate, requestTrip, requestStatus }, { verifiedUser }) {
+    async resolve(_, { requestUser, requestName, requestCell, requestDate, requestTrip, requestStatus }, { verifiedUser }) {
         if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
         const exists = await Request.findOne({ requestUser });
         let newRequest = null
@@ -22,15 +23,15 @@ const addRequest = {
                 if (request.requestStatus === "pending" || request.requestStatus === "accepted") throw new Error("No se permiten múltiples solicitudes");
             })
             newRequest = new Request({
-                requestUser, requestCell, 
-                requestDate, requestTrip,
-                requestStatus
+                requestUser, requestName,
+                requestCell, requestDate,
+                requestTrip, requestStatus
             })
         } else {
             newRequest = new Request({
-                requestUser, requestCell, 
-                requestDate, requestTrip,
-                requestStatus
+                requestUser, requestName,
+                requestCell, requestDate,
+                requestTrip, requestStatus
             })
         }
         const saved = await newRequest.save();

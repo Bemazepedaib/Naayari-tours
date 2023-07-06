@@ -244,6 +244,7 @@ const RequestType = new GraphQLObjectType({
     fields: () => ({
         id: { type: GraphQLID },
         requestUser: { type: GraphQLString },
+        requestName: { type: GraphQLString },
         requestDate: { type: GraphQLString },
         requestCell: { type: GraphQLString },
         requestTrip: { type: GraphQLString },
