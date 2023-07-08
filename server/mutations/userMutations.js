@@ -13,8 +13,8 @@ require('dotenv').config({ path: '../../.env' })
 const login = {
     type: GraphQLString,
     args: {
-        email: { type: GraphQLNonNull(GraphQLString) },
-        password: { type: GraphQLNonNull(GraphQLString) }
+        email: { type: new GraphQLNonNull(GraphQLString) },
+        password: { type: new GraphQLNonNull(GraphQLString) }
     },
     async resolve(_, { email, password }) {
         const user = await User.findOne({ email })
@@ -33,19 +33,19 @@ const login = {
 const addUser = {
     type: GraphQLString,
     args: {
-        name: { type: GraphQLNonNull(GraphQLString) },
-        cellphone: { type: GraphQLNonNull(GraphQLString) },
-        birthDate: { type: GraphQLNonNull(GraphQLString) },
-        email: { type: GraphQLNonNull(GraphQLString) },
-        password: { type: GraphQLNonNull(GraphQLString) },
-        sex: { type: GraphQLNonNull(GraphQLString) },
-        reference: { type: GraphQLNonNull(GraphQLString) },
-        userType: { type: GraphQLNonNull(GraphQLString) },
-        userLevel: { type: GraphQLNonNull(GraphQLString) },
-        membership: { type: GraphQLNonNull(GraphQLBoolean) },
-        coupons: { type: GraphQLList(InputUserCouponType) },
-        preferences: { type: GraphQLList(InputUserPreferenceType) },
-        trips: { type: GraphQLList(InputUserTripType) },
+        name: { type: new GraphQLNonNull(GraphQLString) },
+        cellphone: { type: new GraphQLNonNull(GraphQLString) },
+        birthDate: { type: new GraphQLNonNull(GraphQLString) },
+        email: { type: new GraphQLNonNull(GraphQLString) },
+        password: { type: new GraphQLNonNull(GraphQLString) },
+        sex: { type: new GraphQLNonNull(GraphQLString) },
+        reference: { type: new GraphQLNonNull(GraphQLString) },
+        userType: { type: new GraphQLNonNull(GraphQLString) },
+        userLevel: { type: new GraphQLNonNull(GraphQLString) },
+        membership: { type: new GraphQLNonNull(GraphQLBoolean) },
+        coupons: { type: new GraphQLList(InputUserCouponType) },
+        preferences: { type: new GraphQLList(InputUserPreferenceType) },
+        trips: { type: new GraphQLList(InputUserTripType) },
         guideDescription: { type: GraphQLString },
         guidePhoto: { type: GraphQLString },
         guideSpecial: { type: GraphQLString },
@@ -76,7 +76,7 @@ const addUser = {
 const deleteUser = {
     type: GraphQLString,
     args: {
-        email: { type: GraphQLNonNull(GraphQLString) }
+        email: { type: new GraphQLNonNull(GraphQLString) }
     },
     async resolve(_, { email }, { verifiedUser }) {
         if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
@@ -90,19 +90,19 @@ const deleteUser = {
 const updateUser = {
     type: GraphQLString,
     args: {
-        name: { type: GraphQLNonNull(GraphQLString) },
-        cellphone: { type: GraphQLNonNull(GraphQLString) },
-        birthDate: { type: GraphQLNonNull(GraphQLString) },
-        email: { type: GraphQLNonNull(GraphQLString) },
-        password: { type: GraphQLNonNull(GraphQLString) },
-        sex: { type: GraphQLNonNull(GraphQLString) },
-        reference: { type: GraphQLNonNull(GraphQLString) },
-        userType: { type: GraphQLNonNull(GraphQLString) },
-        userLevel: { type: GraphQLNonNull(GraphQLString) },
-        membership: { type: GraphQLNonNull(GraphQLBoolean) },
-        coupons: { type: GraphQLList(InputUserCouponType) },
-        preferences: { type: GraphQLList(InputUserPreferenceType) },
-        trips: { type: GraphQLList(InputUserTripType) },
+        name: { type: new GraphQLNonNull(GraphQLString) },
+        cellphone: { type: new GraphQLNonNull(GraphQLString) },
+        birthDate: { type: new GraphQLNonNull(GraphQLString) },
+        email: { type: new GraphQLNonNull(GraphQLString) },
+        password: { type: new GraphQLNonNull(GraphQLString) },
+        sex: { type: new GraphQLNonNull(GraphQLString) },
+        reference: { type: new GraphQLNonNull(GraphQLString) },
+        userType: { type: new GraphQLNonNull(GraphQLString) },
+        userLevel: { type: new GraphQLNonNull(GraphQLString) },
+        membership: { type: new GraphQLNonNull(GraphQLBoolean) },
+        coupons: { type: new GraphQLList(InputUserCouponType) },
+        preferences: { type: new GraphQLList(InputUserPreferenceType) },
+        trips: { type: new GraphQLList(InputUserTripType) },
         guideDescription: { type: GraphQLString },
         guidePhoto: { type: GraphQLString },
         guideSpecial: { type: GraphQLString },
@@ -138,7 +138,7 @@ const updateUser = {
 const updateUserPassword = {
     type: GraphQLString,
     args: {
-        newPassword: { type: GraphQLNonNull(GraphQLString) },
+        newPassword: { type: new GraphQLNonNull(GraphQLString) },
         password: { type: GraphQLString },
         email: { type: GraphQLString },
     },
@@ -171,7 +171,7 @@ const updateUserPassword = {
 const updateUserName = {
     type: GraphQLString,
     args: {
-        newName: { type: GraphQLNonNull(GraphQLString) },
+        newName: { type: new GraphQLNonNull(GraphQLString) },
         password: { type: GraphQLString },
         email: { type: GraphQLString },
     },
@@ -202,7 +202,7 @@ const updateUserName = {
 const updateUserCell = {
     type: GraphQLString,
     args: {
-        newCell: { type: GraphQLNonNull(GraphQLString) },
+        newCell: { type: new GraphQLNonNull(GraphQLString) },
         password: { type: GraphQLString },
         email: { type: GraphQLString },
     },
@@ -233,7 +233,7 @@ const updateUserCell = {
 const updateUserPreferences = {
     type: GraphQLString,
     args: {
-        newPref: { type: GraphQLList(InputUserPreferenceType) },
+        newPref: { type: new GraphQLList(InputUserPreferenceType) },
         email: { type: GraphQLString },
     },
     async resolve(_, { newPref, email }, { verifiedUser }) {
@@ -261,7 +261,7 @@ const updateUserPreferences = {
 const updateUserBirth = {
     type: GraphQLString,
     args: {
-        newDate: { type: GraphQLNonNull(GraphQLString) },
+        newDate: { type: new GraphQLNonNull(GraphQLString) },
         email: { type: GraphQLString },
     },
     async resolve(_, { newDate, email }, { verifiedUser }) {

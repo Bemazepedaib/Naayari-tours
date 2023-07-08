@@ -14,7 +14,7 @@ const addEvent = {
         eventType: { type: GraphQLString },
         eventStatus: { type: GraphQLString },
         eventGuide: { type: GraphQLString },
-        users: { type: GraphQLList(InputEventUserType) }
+        users: { type: new GraphQLList(InputEventUserType) }
     },
     async resolve(_, { eventDate, eventTrip, eventType, eventStatus, eventGuide, users }, { verifiedUser }) {
         if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
@@ -34,8 +34,8 @@ const addEvent = {
 const deleteEvent = {
     type: GraphQLString,
     args: {
-        eventDate: { type: GraphQLNonNull(GraphQLString) },
-        eventTrip: { type: GraphQLNonNull(GraphQLString) }
+        eventDate: { type: new GraphQLNonNull(GraphQLString) },
+        eventTrip: { type: new GraphQLNonNull(GraphQLString) }
     },
     async resolve(_, { eventDate, eventTrip }, { verifiedUser }) {
         if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
@@ -69,7 +69,7 @@ const updateEventUsers = {
 }
 
 const deleteEventUser = {
-    type: GraphQLList(EventUserType),
+    type: new GraphQLList(EventUserType),
     args: {
         eventDate: { type: GraphQLString },
         eventTrip: { type: GraphQLString },
@@ -92,7 +92,7 @@ const deleteEventUser = {
 }
 
 const updateEventUser = {
-    type: GraphQLList(EventUserType),
+    type: new GraphQLList(EventUserType),
     args: {
         eventDateFrom: { type: GraphQLString },
         eventTripFrom: { type: GraphQLString },
@@ -251,7 +251,7 @@ const updateEvent = {
         eventType: { type: GraphQLString },
         eventStatus: { type: GraphQLString },
         eventGuide: { type: GraphQLString },
-        users: { type: GraphQLList(InputEventUserType) }
+        users: { type: new GraphQLList(InputEventUserType) }
     },
     async resolve(_, { eventDate, eventTrip, eventType, eventStatus, eventGuide, users }, { verifiedUser }) {
         if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");

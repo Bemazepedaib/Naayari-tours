@@ -6,9 +6,9 @@ const { GraphQLString, GraphQLNonNull } = require('graphql');
 const addPreference = {
     type: GraphQLString,
     args: {
-        preferenceType: { type: GraphQLNonNull(GraphQLString) },
-        preferenceDescription: { type: GraphQLNonNull(GraphQLString) },
-        preferenceIcon: { type: GraphQLNonNull(GraphQLString) }
+        preferenceType: { type: new GraphQLNonNull(GraphQLString) },
+        preferenceDescription: { type: new GraphQLNonNull(GraphQLString) },
+        preferenceIcon: { type: new GraphQLNonNull(GraphQLString) }
     },
     async resolve(_, { preferenceType, preferenceDescription, preferenceIcon }){
         if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
@@ -28,7 +28,7 @@ const addPreference = {
 const deletePreference = {
     type: GraphQLString,
     args: {
-        preferenceType: { type: GraphQLNonNull(GraphQLString) }
+        preferenceType: { type: new GraphQLNonNull(GraphQLString) }
     },
     async resolve(_, { preferenceType }) {
         if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
@@ -42,9 +42,9 @@ const deletePreference = {
 const updatePreference = {
     type: GraphQLString,
     args: {
-        preferenceType: { type: GraphQLNonNull(GraphQLString) },
-        preferenceDescription: { type: GraphQLNonNull(GraphQLString) },
-        preferenceIcon: { type: GraphQLNonNull(GraphQLString) }
+        preferenceType: { type: new GraphQLNonNull(GraphQLString) },
+        preferenceDescription: { type: new GraphQLNonNull(GraphQLString) },
+        preferenceIcon: { type: new GraphQLNonNull(GraphQLString) }
     },
     async resolve(_, { preferenceType, preferenceDescription, preferenceIcon }) {
         if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");

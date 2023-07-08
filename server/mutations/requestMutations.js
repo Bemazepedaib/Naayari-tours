@@ -6,12 +6,12 @@ const { GraphQLString, GraphQLNonNull } = require('graphql');
 const addRequest = {
     type: GraphQLString,
     args: {
-        requestUser: { type: GraphQLNonNull(GraphQLString) },
-        requestName: { type: GraphQLNonNull(GraphQLString) },
-        requestCell: { type: GraphQLNonNull(GraphQLString) },
-        requestDate: { type: GraphQLNonNull(GraphQLString) },
-        requestTrip: { type: GraphQLNonNull(GraphQLString) },
-        requestStatus: { type: GraphQLNonNull(GraphQLString) },
+        requestUser: { type: new GraphQLNonNull(GraphQLString) },
+        requestName: { type: new GraphQLNonNull(GraphQLString) },
+        requestCell: { type: new GraphQLNonNull(GraphQLString) },
+        requestDate: { type: new GraphQLNonNull(GraphQLString) },
+        requestTrip: { type: new GraphQLNonNull(GraphQLString) },
+        requestStatus: { type: new GraphQLNonNull(GraphQLString) },
     },
     async resolve(_, { requestUser, requestName, requestCell, requestDate, requestTrip, requestStatus }, { verifiedUser }) {
         if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
@@ -43,7 +43,7 @@ const addRequest = {
 const deleteRequest = {
     type: GraphQLString,
     args: {
-        requestUser: { type: GraphQLNonNull(GraphQLString) }
+        requestUser: { type: new GraphQLNonNull(GraphQLString) }
     },
     async resolve(_, { requestUser }, { verifiedUser }) {
         if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
@@ -57,8 +57,8 @@ const deleteRequest = {
 const updateRequest = {
     type: GraphQLString,
     args: {
-        requestUser: { type: GraphQLNonNull(GraphQLString) },
-        requestStatus: { type: GraphQLNonNull(GraphQLString) },
+        requestUser: { type: new GraphQLNonNull(GraphQLString) },
+        requestStatus: { type: new GraphQLNonNull(GraphQLString) },
     },
     async resolve(_, { requestUser, requestStatus }, { verifiedUser }){
         if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");

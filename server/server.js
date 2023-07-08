@@ -3,10 +3,11 @@ require('dotenv').config()
 //libraries
 const express = require('express');
 const mongoose = require('mongoose');
-const { graphqlHTTP } = require('express-graphql');
 const app = express();
 const cors = require('cors');
 const { auth } = require('./middlewares/login');
+const bodyParser = require('body-parser')
+const { createHandler } = require('graphql-http/lib/use/express')
 
 //schemas
 const schema = require('./schemas/schema');
@@ -17,10 +18,13 @@ app.use(cors());
 //middleware de auth
 app.use(auth);
 
+//increase payload size limit
+app.use(bodyParser.json({ limit: '10mb' }))
+
 //graphql endpoint
-app.use('/NaayarAPI', graphqlHTTP({
+app.use('/NaayarAPI', createHandler({
     schema: schema,
-    graphiql: process.env.NODE_ENV === 'development'
+    graphiql: true
 }))
 
 //connect to db

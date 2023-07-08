@@ -33,7 +33,7 @@ const EventUserType = new GraphQLObjectType({
     fields: () => ({
         userEmail: { type: GraphQLString },
         userName: { type: GraphQLString },
-        companion: { type: GraphQLList(EventCompanionType) },
+        companion: { type: new GraphQLList(EventCompanionType) },
         advancePayment: { type: GraphQLInt },
         fullPayment: { type: GraphQLInt },
         advancePaid: { type: GraphQLBoolean },
@@ -47,7 +47,7 @@ const InputEventUserType = new GraphQLInputObjectType({
     fields: () => ({
         userEmail: { type: GraphQLString },
         userName: { type: GraphQLString },
-        companion: { type: GraphQLList(InputEventCompanionType) },
+        companion: { type: new GraphQLList(InputEventCompanionType) },
         advancePayment: { type: GraphQLInt },
         fullPayment: { type: GraphQLInt },
         advancePaid: { type: GraphQLBoolean },
@@ -197,11 +197,11 @@ const TripInformationType = new GraphQLObjectType({
     name: 'TripInformation',
     fields: () => ({
         description: { type: GraphQLString },
-        date: { type: GraphQLList(GraphQLString) },
+        date: { type: new GraphQLList(GraphQLString) },
         place: { type: GraphQLString },
-        price: { type: GraphQLList(TripPriceType) },
+        price: { type: new GraphQLList(TripPriceType) },
         duration: { type: GraphQLString },
-        activities: { type: GraphQLList(TripActivityType) },
+        activities: { type: new GraphQLList(TripActivityType) },
         discount: { type: TripDiscountType },
         itinerary: { type: GraphQLString },
         recomendations: { type: GraphQLString },
@@ -214,11 +214,11 @@ const InputTripInformationType = new GraphQLInputObjectType({
     name: 'InputTripInformation',
     fields: () => ({
         description: { type: GraphQLString },
-        date: { type: GraphQLList(GraphQLString) },
+        date: { type: new GraphQLList(GraphQLString) },
         place: { type: GraphQLString },
-        price: { type: GraphQLList(InputTripPriceType) },
+        price: { type: new GraphQLList(InputTripPriceType) },
         duration: { type: GraphQLString },
-        activities: { type: GraphQLList(InputTripActivityType) },
+        activities: { type: new GraphQLList(InputTripActivityType) },
         discount: { type: InputTripDiscountType },
         itinerary: { type: GraphQLString },
         recomendations: { type: GraphQLString },
@@ -262,7 +262,7 @@ const TripType = new GraphQLObjectType({
         tripKit: { type: GraphQLString },
         tripRating: { type: GraphQLInt },
         tripStatus: { type: GraphQLBoolean },
-        tripReview: { type: GraphQLList(TripReviewType) }
+        tripReview: { type: new GraphQLList(TripReviewType) }
     })
 });
 
@@ -276,7 +276,7 @@ const EventType = new GraphQLObjectType({
         eventType: { type: GraphQLString },
         eventStatus: { type: GraphQLString },
         eventGuide: { type: GraphQLString },
-        users: { type: GraphQLList(EventUserType) }
+        users: { type: new GraphQLList(EventUserType) }
     })
 });
 
@@ -295,9 +295,9 @@ const UserType = new GraphQLObjectType({
         userType: { type: GraphQLString },
         userLevel: { type: GraphQLString },
         membership: { type: GraphQLBoolean },
-        coupons: { type: GraphQLList(UserCouponType) },
-        preferences: { type: GraphQLList(UserPreferenceType) },
-        trips: { type: GraphQLList(UserTripType) },
+        coupons: { type: new GraphQLList(UserCouponType) },
+        preferences: { type: new GraphQLList(UserPreferenceType) },
+        trips: { type: new GraphQLList(UserTripType) },
         guideDescription: { type: GraphQLString },
         guidePhoto: { type: GraphQLString },
         guideSpecial: { type: GraphQLString },

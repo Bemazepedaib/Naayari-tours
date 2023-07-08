@@ -3,7 +3,7 @@ const Trip = require('../models/Trip');
 // GraphQL types
 const { GraphQLString, GraphQLList, GraphQLNonNull, GraphQLBoolean, GraphQLInt } = require('graphql');
 // User defined types
-const { InputTripInformationType, InputTripReviewType } = require('../types/typeDefs');
+const { InputTripInformationType, InputTripReviewType, ImageInputType } = require('../types/typeDefs');
 
 const addTrip = {
     type: GraphQLString,
@@ -13,7 +13,7 @@ const addTrip = {
         tripKit: { type: GraphQLString },
         tripRating: { type: GraphQLInt },
         tripStatus: { type: GraphQLBoolean },
-        tripReview: { type: GraphQLList(InputTripReviewType) }
+        tripReview: { type: new GraphQLList(InputTripReviewType) }
     },
     async resolve(_, { tripName, tripInformation, tripKit, tripRating, tripStatus, tripReview }, { verifiedUser }) {
         if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
@@ -33,7 +33,7 @@ const addTrip = {
 const deleteTrip = {
     type: GraphQLString,
     args: {
-        tripName: { type: GraphQLNonNull(GraphQLString) }
+        tripName: { type: new GraphQLNonNull(GraphQLString) }
     },
     async resolve(_, { tripName }, { verifiedUser }) {
         if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
@@ -47,8 +47,8 @@ const deleteTrip = {
 const updateTripStatus = {
     type: GraphQLString,
     args: {
-        tripName: { type: GraphQLNonNull(GraphQLString) },
-        tripStatus: { type: GraphQLNonNull(GraphQLBoolean) }
+        tripName: { type: new GraphQLNonNull(GraphQLString) },
+        tripStatus: { type: new GraphQLNonNull(GraphQLBoolean) }
     },
     async resolve(_, { tripName, tripStatus }, { verifiedUser }) {
         if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
@@ -71,7 +71,7 @@ const updateTrip = {
         tripKit: { type: GraphQLString },
         tripRating: { type: GraphQLInt },
         tripStatus: { type: GraphQLBoolean },
-        tripReview: { type: GraphQLList(InputTripReviewType) }
+        tripReview: { type: new GraphQLList(InputTripReviewType) }
     },
     async resolve(_, { tripName, tripInformation, tripKit, tripRating, tripStatus, tripReview }, { verifiedUser }) {
         if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
@@ -95,18 +95,18 @@ const updateTrip = {
 const addReview = {
     type: GraphQLString,
     args: {
-        tripName: { type: GraphQLString },
-        tripReview: { type: InputTripReviewType }
+        image: { type: GraphQLString }
     },
-    async resolve(_, { tripName, tripReview }, { verifiedUser }) {
-        if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
-        const updated = await Trip.findOneAndUpdate(
-            { tripName },
-            { $push: { tripReview } },
-            { new: true }
-        );
-        if (!updated) throw new Error("No se pudo agregar la reseña");
-        return "¡Reseña agregada exitósamente!";
+    async resolve(_, { image }, { verifiedUser }) {
+        console.log(image)
+        // if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
+        // const updated = await Trip.findOneAndUpdate(
+        //     { tripName },
+        //     { $push: { tripReview } },
+        //     { new: true }
+        // );
+        // if (!updated) throw new Error("No se pudo agregar la reseña");
+        // return "¡Reseña agregada exitósamente!";
     }
 }
 

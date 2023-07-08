@@ -6,7 +6,7 @@ const { GraphQLString, GraphQLList } = require('graphql');
 const { UserType } = require('../types/typeDefs');
 
 const users = {
-    type: GraphQLList(UserType),
+    type: new GraphQLList(UserType),
     resolve(_, __) {
         return User.find()
     }
