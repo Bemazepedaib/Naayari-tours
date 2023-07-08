@@ -7,7 +7,7 @@ const app = express();
 const cors = require('cors');
 const { auth } = require('./middlewares/login');
 const bodyParser = require('body-parser')
-const { createHandler } = require('graphql-http/lib/use/express')
+const { graphqlHTTP } = require('express-graphql')
 
 //schemas
 const schema = require('./schemas/schema');
@@ -22,7 +22,7 @@ app.use(auth);
 app.use(bodyParser.json({ limit: '10mb' }))
 
 //graphql endpoint
-app.use('/NaayarAPI', createHandler({
+app.all('/NaayarAPI', graphqlHTTP({ 
     schema: schema,
     graphiql: true
 }))

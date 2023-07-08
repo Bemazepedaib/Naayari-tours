@@ -15,7 +15,7 @@ const trips = {
 const trip = {
     type: TripType,
     args: { tripName: { type: GraphQLString } },
-    resolve(_, { tripName}) {
+    resolve(_, { tripName }) {
         return Trip.findOne({ tripName: tripName })
     }
 }
