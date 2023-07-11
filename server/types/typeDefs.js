@@ -3,7 +3,8 @@ const {
     GraphQLObjectType, GraphQLID,
     GraphQLString, GraphQLList,
     GraphQLBoolean, GraphQLInt,
-    GraphQLInputObjectType
+    GraphQLInputObjectType,
+    GraphQLFloat
 } = require('graphql');
 
 //Companion types
@@ -260,7 +261,7 @@ const TripType = new GraphQLObjectType({
         tripName: { type: GraphQLString },
         tripInformation: { type: TripInformationType },
         tripKit: { type: GraphQLString },
-        tripRating: { type: GraphQLInt },
+        tripRating: { type: GraphQLFloat },
         tripStatus: { type: GraphQLBoolean },
         tripReview: { type: new GraphQLList(TripReviewType) }
     })

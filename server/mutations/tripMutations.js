@@ -1,9 +1,9 @@
 // Mongoose Model
 const Trip = require('../models/Trip');
 // GraphQL types
-const { GraphQLString, GraphQLList, GraphQLNonNull, GraphQLBoolean, GraphQLInt } = require('graphql');
+const { GraphQLString, GraphQLList, GraphQLNonNull, GraphQLBoolean, GraphQLInt, GraphQLFloat } = require('graphql');
 // User defined types
-const { InputTripInformationType, InputTripReviewType, ImageInputType } = require('../types/typeDefs');
+const { InputTripInformationType, InputTripReviewType } = require('../types/typeDefs');
 
 const addTrip = {
     type: GraphQLString,
@@ -11,7 +11,7 @@ const addTrip = {
         tripName: { type: GraphQLString },
         tripInformation: { type: InputTripInformationType },
         tripKit: { type: GraphQLString },
-        tripRating: { type: GraphQLInt },
+        tripRating: { type: GraphQLFloat },
         tripStatus: { type: GraphQLBoolean },
         tripReview: { type: new GraphQLList(InputTripReviewType) }
     },
@@ -69,7 +69,7 @@ const updateTrip = {
         tripName: { type: GraphQLString },
         tripInformation: { type: InputTripInformationType },
         tripKit: { type: GraphQLString },
-        tripRating: { type: GraphQLInt },
+        tripRating: { type: GraphQLFloat },
         tripStatus: { type: GraphQLBoolean },
         tripReview: { type: new GraphQLList(InputTripReviewType) }
     },
@@ -95,18 +95,28 @@ const updateTrip = {
 const addReview = {
     type: GraphQLString,
     args: {
-        image: { type: GraphQLString }
+        tripName: { type: GraphQLString },
+        tripReview: { type: InputTripReviewType }
     },
-    async resolve(_, { image }, { verifiedUser }) {
-        console.log(image)
-        // if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
-        // const updated = await Trip.findOneAndUpdate(
-        //     { tripName },
-        //     { $push: { tripReview } },
-        //     { new: true }
-        // );
-        // if (!updated) throw new Error("No se pudo agregar la reseña");
-        // return "¡Reseña agregada exitósamente!";
+    async resolve(_, { tripName, tripReview }, { verifiedUser }) {
+        if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
+        const trip = await Trip.findOne({ tripName })
+        let tripRating = 0;
+        trip.tripReview.map(review => {
+            tripRating += review.rating;
+        })
+        tripRating += tripReview.rating;
+        tripRating /= trip.tripReview.length + 1;
+        const updated = await Trip.findOneAndUpdate(
+            { tripName },
+            {
+                $push: { tripReview },
+                $set: { tripRating }
+            },
+            { new: true }
+        );
+        if (!updated) throw new Error("No se pudo agregar la reseña");
+        return "¡Reseña agregada exitósamente!";
     }
 }
 
