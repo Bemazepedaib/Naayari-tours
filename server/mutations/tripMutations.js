@@ -26,7 +26,7 @@ const addTrip = {
             tripStatus, tripReview
         });
         await trip.save();
-        return "¡Viaje creado exitósamente!";
+        return "¡Viaje creado exitosamente!";
     }
 }
 
@@ -40,7 +40,7 @@ const deleteTrip = {
         if (verifiedUser.userType !== "admin") throw new Error("Solo un administrador puede eliminar viajes");
         const deleted = await Trip.findOneAndDelete({ tripName });
         if (!deleted) throw new Error("No se pudo eliminar el viaje");
-        return "¡Viaje Borrado exitósamente!";
+        return "¡Viaje Borrado exitosamente!";
     }
 }
 
@@ -59,7 +59,7 @@ const updateTripStatus = {
             { new: true }
         );
         if (!updated) throw new Error("No se pudo actualizar el estado del viaje");
-        return "¡Estado del viaje actualizdo exitósamente!";
+        return "¡Estado del viaje actualizdo exitosamente!";
     }
 }
 
@@ -88,7 +88,7 @@ const updateTrip = {
             { new: true }
         );
         if (!updated) throw new Error("No se pudo actualizar el viaje");
-        return "¡Viaje Actualizado exitósamente!";
+        return "¡Viaje Actualizado exitosamente!";
     }
 }
 
@@ -115,7 +115,7 @@ const addReview = {
             { new: true }
         );
         if (!updated) throw new Error("No se pudo agregar la reseña");
-        return "¡Reseña agregada exitósamente!";
+        return "¡Reseña agregada exitosamente!";
     }
 }
 
@@ -140,7 +140,7 @@ const updateDiscount = {
                     throw new Error("No se pudo deshabilitar el descuento");
                 }
 
-                return "¡Descuento deshabilitado exitósamente!";
+                return "¡Descuento deshabilitado exitosamente!";
             }
         });
         await Promise.all(promises);

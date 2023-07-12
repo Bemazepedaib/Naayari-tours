@@ -36,7 +36,7 @@ const addRequest = {
         }
         const saved = await newRequest.save();
         if (!saved) throw new Error("Algo ha salido mal, intente de nuevo más tarde")
-        return "¡Solicitud creada exitósamente! Espere a que un administrador apruebe la solicitud."
+        return "¡Solicitud creada exitosamente! Espere a que un administrador apruebe la solicitud."
     }
 }
 
@@ -50,7 +50,7 @@ const deleteRequest = {
         if (verifiedUser.userType !== "admin") throw new Error("Solo un administrador puede eliminar solicitudes");
         const deleted = await Request.findOneAndDelete({ requestUser });
         if (!deleted) throw new Error("No se pudo eliminar la solicitud");
-        return "¡Usuario borrado exitósamente!";
+        return "¡Usuario borrado exitosamente!";
     }
 }
 
@@ -69,7 +69,7 @@ const updateRequest = {
             { new: true }
         );
         if (!updated) throw new Error("No se pudo actualizar el estado de la solicitud");
-        return "¡Estado de la solicitud actualizado exitósamente!";
+        return "¡Estado de la solicitud actualizado exitosamente!";
     }
 }
 

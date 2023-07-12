@@ -27,7 +27,7 @@ const addEvent = {
             eventGuide, users
         });
         await event.save();
-        return "¡Evento creado exitósamente!"
+        return "¡Evento creado exitosamente!"
     }
 }
 
@@ -42,7 +42,7 @@ const deleteEvent = {
         if (verifiedUser.userType !== "admin") throw new Error("Solo un administrador puede eliminar eventos");
         const deleted = await Event.findOneAndDelete({ eventDate, eventTrip })
         if (!deleted) throw new Error("No se pudo eliminar el evento");
-        return "¡Evento borrado exitósamente!";
+        return "¡Evento borrado exitosamente!";
     }
 }
 
@@ -268,7 +268,7 @@ const updateEvent = {
             { new: true }
         );
         if (!updated) throw new Error("No se pudo hacer la reservación correctamente");
-        return "¡Su reserva se ha creado exitósamente!";
+        return "¡Su reserva se ha creado exitosamente!";
     }
 }
 

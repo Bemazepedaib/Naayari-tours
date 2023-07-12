@@ -83,7 +83,7 @@ const deleteUser = {
         if (verifiedUser.userType !== "admin") throw new Error("Solo un administrador puede eliminar usuarios");
         const deleted = await User.findOneAndDelete({ email });
         if (!deleted) throw new Error("No se pudo eliminar el usuario");
-        return "¡Usuario borrado exitósamente!";
+        return "¡Usuario borrado exitosamente!";
     }
 }
 
@@ -131,7 +131,7 @@ const updateUser = {
             { new: true }
         );
         if (!updated) throw new Error("No se pudo actualizar el usuario");
-        return "¡Usuario actualizado exitósamente!";
+        return "¡Usuario actualizado exitosamente!";
     }
 }
 
@@ -164,7 +164,7 @@ const updateUserPassword = {
             )
         }
         if (!updated) throw new Error("No se pudo actualizar la contraseña");
-        return "¡Contraseña actualizada exitósamente!";
+        return "¡Contraseña actualizada exitosamente!";
     }
 }
 
@@ -195,7 +195,7 @@ const updateUserName = {
             )
         }
         if (!updated) throw new Error("No se pudo actualizar el nombre");
-        return "¡Nombre actualizado exitósamente!" + "%" + newName;
+        return "¡Nombre actualizado exitosamente!" + "%" + newName;
     }
 }
 
@@ -226,7 +226,7 @@ const updateUserCell = {
             )
         }
         if (!updated) throw new Error("No se pudo actualizar el número telefónico");
-        return "¡Número telefónico actualizado exitósamente!" + "%" + newCell;
+        return "¡Número telefónico actualizado exitosamente!" + "%" + newCell;
     }
 }
 
@@ -254,7 +254,7 @@ const updateUserPreferences = {
             )
         }
         if (!updated) throw new Error("No se pudieron actualizar las preferencias");
-        return "¡Preferencias actualizadas exitósamente!";
+        return "¡Preferencias actualizadas exitosamente!";
     }
 }
 
@@ -274,7 +274,7 @@ const updateUserBirth = {
             { new: true }
         )
         if (!updated) throw new Error("No se pudo actualizar la fecha de nacimiento");
-        return "¡Fecha de nacimiento actualizada exitósamente!" + "%" + newDate;
+        return "¡Fecha de nacimiento actualizada exitosamente!" + "%" + newDate;
     }
 }
 
@@ -405,7 +405,7 @@ const updateCoupons = {
                 { new: true }
             )
             if (!updated) throw new Error("No se pudo actualizar el cupon");
-            return "¡Cupon actualizado exitósamente!";
+            return "¡Cupon actualizado exitosamente!";
         }
     }
 }

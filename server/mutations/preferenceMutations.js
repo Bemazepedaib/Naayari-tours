@@ -21,7 +21,7 @@ const addPreference = {
             preferenceIcon: preferenceIcon
         });
         await preference.save()
-        return "¡Preferencia creada exitósamente!"
+        return "¡Preferencia creada exitosamente!"
     }
 }
 
@@ -35,7 +35,7 @@ const deletePreference = {
         if (verifiedUser.userType !== "admin") throw new Error("Solo un administrador puede eliminar preferencias");
         const deleted = await Preference.findOneAndDelete({ preferenceType: preferenceType });
         if (!deleted) throw new Error("No se pudo eliminar la preferencia");
-        return "¡Preferencia eliminada exitósamente!"
+        return "¡Preferencia eliminada exitosamente!"
     }
 }
 
@@ -60,7 +60,7 @@ const updatePreference = {
             { new: true }
         );
         if (!updated) throw new Error("No se pudo actualizar la preferencia");
-        return "¡Preferencia actualizado exitósamente!";
+        return "¡Preferencia actualizado exitosamente!";
     }
 }
 
