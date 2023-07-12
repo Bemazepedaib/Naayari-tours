@@ -99,7 +99,6 @@ const addReview = {
         tripReview: { type: InputTripReviewType }
     },
     async resolve(_, { tripName, tripReview }, { verifiedUser }) {
-        if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
         const trip = await Trip.findOne({ tripName })
         let tripRating = 0;
         trip.tripReview.map(review => {

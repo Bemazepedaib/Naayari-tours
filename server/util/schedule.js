@@ -2,7 +2,7 @@ const { request } = require('graphql-request');
 const schedule = require('node-schedule');
 require('dotenv').config({ path: '../../.env' });
 
-const endpoint = 'http://localhost:4000/NaayarAPI'
+const endpoint = process.env.ENDPOINT
 
 const giveCoupons = `
     mutation {
