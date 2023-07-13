@@ -38,7 +38,7 @@ const uploadImage = async (req, res) => {
         const imageFile = fs.readFileSync('image.jpg')
         const response = await drive.files.create({
             requestBody: {
-                name: `${req.body.tripName}/${file.name}`,
+                name: `${req.body.tripName}/${file.name}/${new Date().toISOString().split("T")[0].split("-").reverse().join("-")}`,
                 mimeType: file.mimetype,
                 parents: ['1RW3JONgSNG2gx_ZXQTCFU6ZnUGT9xnBd'],
             },

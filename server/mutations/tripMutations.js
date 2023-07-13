@@ -119,6 +119,42 @@ const addReview = {
     }
 }
 
+const deleteReview = {
+    type: GraphQLString,
+    args: {
+        tripName: { type: GraphQLString },
+        tripReview: { type: InputTripReviewType }
+    },
+    async resolve(_, { tripName, tripReview }, { verifiedUser }) {
+        // if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
+        // if (verifiedUser.userType !== "admin") throw new Error("Solo un administrador puede actualizar los viajes");
+        const trip = await Trip.findOne({ tripName })        
+        const index = trip.tripReview.findIndex(review => 
+            review.user === tripReview.user && review.rating === tripReview.rating &&
+            review.review === tripReview.review && review.date === tripReview.date &&
+            review.photo === tripReview.photo
+        )
+        trip.tripReview.splice(index, 1)
+        let newRating = 0;
+        trip.tripReview.map(review => {
+            newRating += review.rating;
+        })
+        newRating /= trip.tripReview.length;
+        const updated = await Trip.findOneAndUpdate(
+            { tripName },
+            {
+                $set: { 
+                    tripReview: trip.tripReview, 
+                    tripRating: newRating 
+                }
+            },
+            { new: true }
+        );
+        if (!updated) throw new Error("No se pudo elimiar la reseña");
+        return "¡Reseña eliminada exitosamente!";
+    }
+}
+
 const updateDiscount = {
     type: GraphQLString,
     async resolve(_, __) {
@@ -150,5 +186,5 @@ const updateDiscount = {
 
 
 module.exports = {
-    addTrip, deleteTrip, updateTripStatus, updateTrip, addReview, updateDiscount
+    addTrip, deleteTrip, updateTripStatus, updateTrip, addReview, deleteReview, updateDiscount
 }
