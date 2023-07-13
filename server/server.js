@@ -36,10 +36,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.post('/uploadImage', uploadImage)
 
 //graphql endpoint
-app.all('/NaayarAPI', graphqlHTTP({ 
-    schema: schema,
-    graphiql: true
-}))
+app.all('/NaayarAPI', graphqlHTTP({ schema: schema }))
 
 //connect to db
 mongoose.set('strictQuery', true)
