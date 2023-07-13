@@ -126,8 +126,8 @@ const deleteReview = {
         tripReview: { type: InputTripReviewType }
     },
     async resolve(_, { tripName, tripReview }, { verifiedUser }) {
-        // if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
-        // if (verifiedUser.userType !== "admin") throw new Error("Solo un administrador puede actualizar los viajes");
+        if (!verifiedUser) throw new Error("Debes iniciar sesion para realizar esta accion");
+        if (verifiedUser.userType !== "admin") throw new Error("Solo un administrador puede actualizar los viajes");
         const trip = await Trip.findOne({ tripName })        
         const index = trip.tripReview.findIndex(review => 
             review.user === tripReview.user && review.rating === tripReview.rating &&
@@ -136,10 +136,14 @@ const deleteReview = {
         )
         trip.tripReview.splice(index, 1)
         let newRating = 0;
-        trip.tripReview.map(review => {
-            newRating += review.rating;
-        })
-        newRating /= trip.tripReview.length;
+        if (trip.tripReview.length > 0) {
+            trip.tripReview.map(review => {
+                newRating += review.rating;
+            })
+            newRating /= trip.tripReview.length;
+        } else {
+            newRating = 5;
+        }
         const updated = await Trip.findOneAndUpdate(
             { tripName },
             {
