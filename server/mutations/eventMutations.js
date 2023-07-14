@@ -175,7 +175,7 @@ const updateEventStatus = {
             updated.users.push({ userEmail: updated.eventGuide.split("|")[0] })
             await Promise.all(
                 updated.users.map(async (user) => {
-                    if (user.userEmail.split("@") > 1) {
+                    if (user.userEmail.split("@").length > 1) {
                         const findUser = await User.findOne({ email: user.userEmail });
                         const tripIndex = findUser.trips.findIndex(
                             (trip) => trip.tripDate === newTrip.tripDate && trip.tripName === newTrip.tripName
