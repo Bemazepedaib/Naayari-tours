@@ -309,10 +309,10 @@ const giveCoupons = {
                         '</style></head><body><div class="container">' +
                         '<a href="https://lh3.googleusercontent.com/drive-viewer/AFGJ81rzSbzpM7cIO9XIiFVYnuPBOFR78-3NgtYpzy-T_6RhDecOL8tDZqFBE1XjXQVouc3c7PoQxWiC-QV0iMyHCMtnbtLW=s2560?source=screenshot.guru"> <img src="https://lh3.googleusercontent.com/drive-viewer/AFGJ81rzSbzpM7cIO9XIiFVYnuPBOFR78-3NgtYpzy-T_6RhDecOL8tDZqFBE1XjXQVouc3c7PoQxWiC-QV0iMyHCMtnbtLW=s2560" /> </a>' +
                         `<h1>¡Feliz Cumpleaños!</h1><p>Querido ${user.name},</p>` +
-                        '<p>¡Hoy es un día muy especial! Quería aprovechar esta ocasión para desearte un cumpleaños lleno de alegría, amor y' +
-                        'felicidad. Espero que este nuevo año de vida esté lleno de momentos maravillosos y que todos tus sueños se hagan' +
+                        '<p>¡Hoy es un día muy especial! Quería aprovechar esta ocasión para desearte un cumpleaños lleno de alegría, amor y ' +
+                        'felicidad. Espero que este nuevo año de vida esté lleno de momentos maravillosos y que todos tus sueños se hagan ' +
                         'realidad.</p>' +
-                        '<p>Disfruta al máximo de tu día y celebra rodeado de tus seres queridos. ¡Eres una persona increíble y te mereces lo' +
+                        '<p>Disfruta al máximo de tu día y celebra rodeado de tus seres queridos. ¡Eres una persona increíble y te mereces lo ' +
                         'mejor en este y todos los días!</p>' +
                         '<p>¡Que tengas un cumpleaños inolvidable!</p><p>Un abrazo,</p><p>Naayari tours.</p></div></body></html>'
                 };
